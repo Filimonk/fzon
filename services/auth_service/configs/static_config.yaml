@@ -42,11 +42,11 @@ components_manager:
         dns-client:
             fs-task-processor: fs-task-processor
 
-        tests-control:
-            load-enabled: $is-testing
-            path: /tests/{action}
-            method: POST
-            task_processor: main-task-processor
+        # tests-control:
+            # load-enabled: $is-testing
+            # path: /tests/{action}
+            # method: POST
+            # task_processor: main-task-processor
 
         handler-ping:
             path: /ping

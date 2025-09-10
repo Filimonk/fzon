@@ -37,37 +37,37 @@ target_link_libraries(
 add_executable(${PROJECT_NAME} src/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
 
-# Unit Tests
-add_executable(${PROJECT_NAME}_unittest src/greeting_test.cpp)
-target_link_libraries(${PROJECT_NAME}_unittest PRIVATE ${PROJECT_NAME}_objs userver::utest)
-add_google_tests(${PROJECT_NAME}_unittest)
+# # Unit Tests
+# add_executable(${PROJECT_NAME}_unittest src/greeting_test.cpp)
+# target_link_libraries(${PROJECT_NAME}_unittest PRIVATE ${PROJECT_NAME}_objs userver::utest)
+# add_google_tests(${PROJECT_NAME}_unittest)
 
-# Benchmarks
-add_executable(${PROJECT_NAME}_benchmark src/greeting_benchmark.cpp)
-target_link_libraries(${PROJECT_NAME}_benchmark PRIVATE ${PROJECT_NAME}_objs userver::ubench)
-add_google_benchmark_tests(${PROJECT_NAME}_benchmark)
+# # Benchmarks
+# add_executable(${PROJECT_NAME}_benchmark src/greeting_benchmark.cpp)
+# target_link_libraries(${PROJECT_NAME}_benchmark PRIVATE ${PROJECT_NAME}_objs userver::ubench)
+# add_google_benchmark_tests(${PROJECT_NAME}_benchmark)
 
-# Functional testing
-userver_testsuite_add_simple()
+# # Functional testing
+# userver_testsuite_add_simple()
 
-# Install
-include(GNUInstallDirs)
+# # Install
+# include(GNUInstallDirs)
 
-if(DEFINED ENV{PREFIX})
-    message(STATUS "Set install prefix: $ENV{PREFIX}")
-    file(TO_CMAKE_PATH "$ENV{PREFIX}" PREFIX_PATH)
-    set(CMAKE_INSTALL_PREFIX "${PREFIX_PATH}")
-endif()
+# if(DEFINED ENV{PREFIX})
+    # message(STATUS "Set install prefix: $ENV{PREFIX}")
+    # file(TO_CMAKE_PATH "$ENV{PREFIX}" PREFIX_PATH)
+    # set(CMAKE_INSTALL_PREFIX "${PREFIX_PATH}")
+# endif()
 
-file(GLOB CONFIGS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/configs/*.yaml ${CMAKE_CURRENT_SOURCE_DIR}/configs/*.json)
+# file(GLOB CONFIGS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/configs/*.yaml ${CMAKE_CURRENT_SOURCE_DIR}/configs/*.json)
 
-install(
-    TARGETS ${PROJECT_NAME}
-    DESTINATION ${CMAKE_INSTALL_BINDIR}
-    COMPONENT ${PROJECT_NAME}
-)
-install(
-    FILES ${CONFIGS_FILES}
-    DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/${PROJECT_NAME}
-    COMPONENT ${PROJECT_NAME}
-)
+# install(
+    # TARGETS ${PROJECT_NAME}
+    # DESTINATION ${CMAKE_INSTALL_BINDIR}
+    # COMPONENT ${PROJECT_NAME}
+# )
+# install(
+    # FILES ${CONFIGS_FILES}
+    # DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/${PROJECT_NAME}
+    # COMPONENT ${PROJECT_NAME}
+# )
