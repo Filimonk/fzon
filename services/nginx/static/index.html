@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная страница</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>FZON маркетплейс - единицы товаров по выгодным ценам</title>
+    <link rel="stylesheet" href="css/header.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Добро пожаловать!</h1>
-        <p>Это главная страница моего веб-сервиса</p>
-        <a href="/hello.html" class="btn">Перейти к приветствию</a>
-        <a href="/hello-postgres.html" class="btn">Перейти к приветствию с запоминанием</a>
-    </div>
+    <div id="header-container"></div>
+
+    <script src="js/Header.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = new Header();
+            header.render('header-container');
+        });
+    </script>
 </body>
 </html>
 
