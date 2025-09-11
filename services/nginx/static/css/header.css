@@ -136,20 +136,33 @@
 .cart-count {
     position: absolute;
     top: -5px;
-    right: -5px;
+    left: 45px;
     background-color: #f1117e;
     color: white;
-    border-radius: 12px;
-    padding: 2px 6px;
+    border-radius: 10px;
+    padding: 0 6px; /* Убираем вертикальный padding */
     font-size: 12px;
     min-width: 18px;
+    height: 18px;
+    line-height: 18px; /* Важно: должно равняться height */
     text-align: center;
+    box-sizing: border-box;
+    display: none;
+    /* Добавляем для точного выравнивания */
+    align-items: center;
+    justify-content: center;
+    font-weight: bold; /* Чуть жирнее для лучшей читаемости */
 }
 
-/* Адаптивность для счетчика корзины */
-.cart-count.double-digit {
-    border-radius: 10px;
-    padding: 2px 5px;
+/* Для однозначных чисел делаем идеальный круг */
+.cart-count:not(.multi-digit) {
+    padding: 0; /* Убираем весь padding */
+    border-radius: 50%;
+}
+
+/* Для многозначных чисел */
+.cart-count.multi-digit {
+    padding: 0 6px; /* Только горизонтальный padding */
 }
 
 /* Анимации */

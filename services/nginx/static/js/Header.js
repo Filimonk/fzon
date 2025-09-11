@@ -15,10 +15,9 @@ class Header {
                 cartCountElement.textContent = this.cartCount;
                 cartCountElement.style.display = 'block';
                 
+                cartCountElement.classList.remove('multi-digit');
                 if (this.cartCount > 9) {
-                    cartCountElement.classList.add('double-digit');
-                } else {
-                    cartCountElement.classList.remove('double-digit');
+                    cartCountElement.classList.add('multi-digit');
                 }
             } else {
                 cartCountElement.style.display = 'none';
