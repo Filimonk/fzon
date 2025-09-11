@@ -86,16 +86,9 @@ class Header {
                         </a>
                         <a href="bank.html" class="nav-item">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <circle cx="12" cy="12" r="3"></circle>
-                                <line x1="12" y1="2" x2="12" y2="4"></line>
-                                <line x1="12" y1="20" x2="12" y2="22"></line>
-                                <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line>
-                                <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line>
-                                <line x1="2" y1="12" x2="4" y2="12"></line>
-                                <line x1="20" y1="12" x2="22" y2="12"></line>
-                                <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line>
-                                <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line>
+                                <path d="M21 5H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"></path>
+                                <path d="M3 10h18"></path>
+                                <path d="M16 14h4"></path>
                             </svg>
                             <span>Банк</span>
                         </a>
