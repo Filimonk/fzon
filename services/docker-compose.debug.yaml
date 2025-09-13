@@ -11,13 +11,13 @@ services:
     networks:
       - debug-net
     depends_on:
-      - auth_service
+      - authservice
 
-  auth_service:
+  authservice:
     build:
-      context: ./auth_service
+      context: ./authservice
       dockerfile: Dockerfile.debug
-    hostname: auth_service
+    hostname: authservice
     environment:
       # <<: *db_env
       # DB_CONNECTION: "postgresql://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgresql:5432/${AUTH_DB_NAME}?\
@@ -26,19 +26,46 @@ services:
       HOME: /service
       CCACHE_DIR: /service/.ccache
     security_opt:
-      - seccomp=./auth_service/seccomp_config.json
+      - seccomp=./authservice/seccomp_config.json
     command:
       - ./run_as_user.sh
       - "${UID}"
       - "${GID}"
       - sh
       - -lc
-      - "make build-debug && ./build-debug/auth_service --config configs/static_config.yaml \
+      - "make build-debug && ./build-debug/authservice --config configs/static_config.yaml \
                                                         --config_vars configs/config_vars.yaml"
-      # - "make build-debug && make test-debug && ./build-debug/auth_service --config configs/static_config.yaml \
+      # - "make build-debug && make test-debug && ./build-debug/authservice --config configs/static_config.yaml \
                                                                            # --config_vars configs/config_vars.yaml"
     volumes:
-      - ./auth_service:/service
+      - ./authservice:/service
+    networks:
+      - debug-net
+    depends_on:
+      - postgresql
+  
+  userprofilerservice:
+    build:
+      context: ./userprofilerservice
+      dockerfile: Dockerfile.debug
+    hostname: user-profile-service
+    environment:
+      ###### замена переменных
+      DB_CONNECTION: "postgresql://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgresql:5432/${AUTH_DB_NAME}"
+      HOME: /service
+      CCACHE_DIR: /service/.ccache
+    security_opt:
+      - seccomp=./userprofilerservice/seccomp_config.json
+    command:
+      - ./run_as_user.sh
+      - "${UID}"
+      - "${GID}"
+      - sh
+      - -lc
+      - "make build-debug && ./build-debug/userprofilerservice --config configs/static_config.yaml \
+                                                        --config_vars configs/config_vars.yaml"
+    volumes:
+      - ./userprofilerservice:/service
     networks:
       - debug-net
     depends_on:

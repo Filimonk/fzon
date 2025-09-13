@@ -3,13 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FZON маркетплейс - единицы товаров по выгодным ценам</title>
+    <title>Fzon маркетплейс</title>
     <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
     <div id="header-container"></div>
 
+    <main class="main-content">
+        <div class="content-box">
+            <svg class="placeholder-image" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="80" fill="#e0eafb" />
+                <rect x="60" y="60" width="80" height="60" rx="5" fill="#005bff" />
+                <circle cx="100" cy="140" r="20" fill="#005bff" />
+                <rect x="75" y="40" width="50" height="10" rx="5" fill="#005bff" />
+            </svg>
+            <p class="placeholder-text">
+                Здесь будут ваши рекомендации скоро...<br>
+                Пока можете переходить на товары по прямым ссылкам, через каталог или через указание артикула в поле поиска<br><br>
+                Добавить товары на сайт можно через <a href="https://продавец.фзон.рф" target="_blank">панель продавца</a>
+            </p>
+        </div>
+    </main>
+
     <script src="js/Header.js"></script>
+    <script src="js/AuthModal.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const header = new Header();

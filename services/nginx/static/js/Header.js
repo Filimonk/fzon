@@ -1,11 +1,65 @@
 class Header {
     constructor() {
-        this.cartCount = 0;
+        this.cartCount; // Данные по умолчанию 0 выставляются при инициализации
+        this.username; // Данные по умолчанию 'Вход' выставляются при инициализации
+        this.authStatus; // Данные по умолчанию 0 выставляются при инициализации
+        this.authModal = null;
+        this.token = localStorage.getItem('jwt_token');
+    }
+
+    async initialize() {
+        // Проверяем авторизацию при инициализации
+        if (this.token) {
+            try {
+                await this.fetchUserData();
+                return;
+            } catch (error) {
+                console.error('Ошибка при получении данных пользователя:', error);
+            }
+        }
+        
+        this.setCartCount(0); // Данные по умолчанию
+        this.setUsername('Вход'); // Данные по умолчанию
+        this.setAuthStatus(0); // Данные по умолчанию
+    }
+
+    async fetchUserData() {
+        const response = await fetch('/api/user-profiler/get-header-data', {
+            headers: {
+                'Authorization': `Bearer ${this.token}`
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            this.setCartCount(data.cartCount);
+            this.setUsername(data.username);
+            this.setAuthStatus(1);
+            return;
+        }
+
+        if (response.status === 401 || response.status === 403) {
+            // Токен недействителен, удаляем его
+            localStorage.removeItem('jwt_token');
+            this.token = null;
+            throw new Error('Токен недействителен');
+        }
+
+        throw new Error(`Ошибка сервера: ${response.status}`);
     }
 
     setCartCount(count) {
         this.cartCount = count;
         this.updateCartCount();
+    }
+
+    setUsername(name) {
+        this.username = name;
+        this.updateUsername();
+    }
+
+    setAuthStatus(status_var) {
+        this.authStatus = status_var;
     }
 
     updateCartCount() {
@@ -14,7 +68,7 @@ class Header {
             if (this.cartCount > 0) {
                 cartCountElement.textContent = this.cartCount;
                 cartCountElement.style.display = 'block';
-                
+
                 cartCountElement.classList.remove('multi-digit');
                 if (this.cartCount > 9) {
                     cartCountElement.classList.add('multi-digit');
@@ -25,17 +79,61 @@ class Header {
         }
     }
 
+    updateUsername() {
+        const loginElement = document.querySelector('.nav-item.login span');
+        if (loginElement && this.username) {
+            loginElement.textContent = this.username;
+        }
+    }
+
+    showAuthModal() {
+        if (!this.authModal) {
+            this.authModal = new AuthModal(this);
+        }
+        this.authModal.show();
+    }
+
+    handleLoginSuccess(token, userData) {
+        localStorage.setItem('jwt_token', token);
+        this.token = token;
+        this.initialize();
+
+        if (this.authModal) {
+            this.authModal.hide();
+        }
+    }
+
     render(containerId) {
         const container = document.getElementById(containerId);
         if (!container) {
-            console.error(`Container with id ${containerId} not found`);
+            console.error(`Контейнер с id ${containerId} не найден`);
             return;
         }
 
         container.innerHTML = this.getHeaderHTML();
-        
-        // Инициализируем счетчик корзины
-        this.updateCartCount();
+
+        // Добавляем обработчик события для кнопки входа
+        const loginBtn = container.querySelector('.nav-item.login');
+        if (loginBtn) {
+            loginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Проверяем статус аутентификации
+                switch (this.authStatus) {
+                    case 0: // Неавторизован
+                        this.showAuthModal();
+                        break;
+                    case 1: // Авторизован
+                        window.location.href = '/user.html';
+                        break;
+                    default: // null или другие значения
+                        console.log('Статус авторизации не определён');
+                        break;
+                }
+            });
+        }
+
+        // Инициализируем данные пользователя
+        this.initialize();
     }
 
     getHeaderHTML() {
@@ -43,9 +141,9 @@ class Header {
             <header class="header">
                 <div class="header-container">
                     <div class="logo">
-                        <a href="index.html">
-                            <img src="logo.png" alt="Fzon" onerror="this.style.display='none';">
-                            <span class="logo-text">fzon</span>
+                        <a href="/">
+                            <img src="img/logo.png" alt="Fzon" onerror="this.classList.add('error')">
+                            <span class="logo-text">Fzon</span>
                         </a>
                     </div>
 
@@ -69,7 +167,7 @@ class Header {
                     </div>
 
                     <nav class="nav">
-                        <a href="login.html" class="nav-item">
+                        <a href="#" class="nav-item login">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
