@@ -101,7 +101,7 @@ class AuthModal {
         }
 
         try {
-            const endpoint = this.isLoginMode ? '/api/auth/login' : '/api/auth/register';
+            const endpoint = this.isLoginMode ? '/api/auth/login' : '/api/auth/registration';
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
@@ -112,7 +112,8 @@ class AuthModal {
 
             if (response.ok) {
                 const data = await response.json();
-                this.header.handleLoginSuccess(data.token);
+                localStorage.setItem('jwt_token', data.token);
+                window.location.reload();
             } else {
                 const error = await response.json();
                 if (error.field) {

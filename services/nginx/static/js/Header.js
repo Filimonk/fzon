@@ -6,8 +6,46 @@ class Header {
         this.authModal = null;
         this.token = localStorage.getItem('jwt_token');
     }
+    
+    async checkJwtAndSetUsername() {
+        if (this.token) {
+            try {
+                const response = await fetch('/api/authservice/verify', {
+                    headers: {
+                        'Authorization': `Bearer ${this.token}`
+                    }
+                });
 
-    async initialize() {
+                if (response.ok) {
+                    const data = await response.json();
+                    this.setAuthStatus(1);
+                    this.username = data.username;
+                    return;
+                }
+
+                if (response.status === 401 || response.status === 403) {
+                    // Токен недействителен, удаляем его
+                    localStorage.removeItem('jwt_token');
+                    this.token = null;
+                    // Выставляем данные по умолчанию
+                    this.authStatus = 0;
+                    this.username = 'Вход';
+                    
+                    throw new Error('Токен недействителен');
+                }
+
+                throw new Error(`Ошибка сервера: ${response.status}`);
+            } catch (error) {
+                console.error('Ошибка при верификации jwt:', error);
+            }
+        }
+        
+        // Выставляем данные по умолчанию
+        this.authStatus = 0;
+        this.username = 'Вход';
+    }
+
+    async updateHeaderData() {
         // Проверяем авторизацию при инициализации
         if (this.token) {
             try {
@@ -24,7 +62,7 @@ class Header {
     }
 
     async fetchUserData() {
-        const response = await fetch('/api/user-profiler/get-header-data', {
+        const response = await fetch('/api/userprofilerservice/get-header-data', {
             headers: {
                 'Authorization': `Bearer ${this.token}`
             }
@@ -54,7 +92,14 @@ class Header {
     }
 
     setUsername(name) {
-        this.username = name;
+        // Проверяем длину строки
+        if (name.length > 7) {
+            // Обрезаем до 4 символов и добавляем многоточие
+            this.username = name.substring(0, 4) + '...';
+        } else {
+            // Если длина <= 7, используем оригинальную строку
+            this.username = name;
+        }
         this.updateUsername();
     }
 
@@ -93,24 +138,15 @@ class Header {
         this.authModal.show();
     }
 
-    handleLoginSuccess(token, userData) {
-        localStorage.setItem('jwt_token', token);
-        this.token = token;
-        this.initialize();
-
-        if (this.authModal) {
-            this.authModal.hide();
-        }
-    }
-
-    render(containerId) {
+    async render(containerId) {
         const container = document.getElementById(containerId);
         if (!container) {
             console.error(`Контейнер с id ${containerId} не найден`);
             return;
         }
 
-        container.innerHTML = this.getHeaderHTML();
+        const htmlString = await this.getHeaderHTML();
+        container.innerHTML = htmlString;
 
         // Добавляем обработчик события для кнопки входа
         const loginBtn = container.querySelector('.nav-item.login');
@@ -133,10 +169,11 @@ class Header {
         }
 
         // Инициализируем данные пользователя
-        this.initialize();
+        this.updateHeaderData();
     }
 
-    getHeaderHTML() {
+    async getHeaderHTML() {
+        await this.checkJwtAndSetUsername();
         return `
             <header class="header">
                 <div class="header-container">
@@ -169,7 +206,7 @@ class Header {
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
-                            <span>Войти</span>
+                            <span>${this.username}</span>
                         </a>
                         <a href="orders.html" class="nav-item">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

@@ -133,9 +133,14 @@
     align-items: center;
     text-decoration: none;
     color: #666;
-    margin-left: 20px;
     position: relative;
     transition: color 0.3s;
+    
+    width: 64px;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 14px;
 }
 
 .nav-item:hover {
@@ -145,7 +150,7 @@
 .nav-item svg {
     width: 24px;
     height: 24px;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
     stroke: #666;
     transition: stroke 0.3s;
 }
