@@ -48,7 +48,7 @@ services:
     build:
       context: ./userprofilerservice
       dockerfile: Dockerfile.debug
-    hostname: user-profile-service
+    hostname: userprofileservice
     environment:
       ###### замена переменных
       DB_CONNECTION: "postgresql://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgresql:5432/${AUTH_DB_NAME}"
@@ -66,6 +66,60 @@ services:
                                                         --config_vars configs/config_vars.yaml"
     volumes:
       - ./userprofilerservice:/service
+    networks:
+      - debug-net
+    depends_on:
+      - postgresql
+  
+  cartservice:
+    build:
+      context: ./cartservice
+      dockerfile: Dockerfile.debug
+    hostname: cartservice
+    environment:
+      ###### замена переменных
+      DB_CONNECTION: "postgresql://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgresql:5432/${AUTH_DB_NAME}"
+      HOME: /service
+      CCACHE_DIR: /service/.ccache
+    security_opt:
+      - seccomp=./cartservice/seccomp_config.json
+    command:
+      - ./run_as_user.sh
+      - "${UID}"
+      - "${GID}"
+      - sh
+      - -lc
+      - "make build-debug && ./build-debug/cartservice --config configs/static_config.yaml \
+                                                       --config_vars configs/config_vars.yaml"
+    volumes:
+      - ./cartservice:/service
+    networks:
+      - debug-net
+    depends_on:
+      - postgresql
+  
+  catalogservice:
+    build:
+      context: ./catalogservice
+      dockerfile: Dockerfile.debug
+    hostname: catalogservice
+    environment:
+      ###### замена переменных
+      DB_CONNECTION: "postgresql://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgresql:5432/${AUTH_DB_NAME}"
+      HOME: /service
+      CCACHE_DIR: /service/.ccache
+    security_opt:
+      - seccomp=./catalogservice/seccomp_config.json
+    command:
+      - ./run_as_user.sh
+      - "${UID}"
+      - "${GID}"
+      - sh
+      - -lc
+      - "make build-debug && ./build-debug/catalogservice --config configs/static_config.yaml \
+                                                          --config_vars configs/config_vars.yaml"
+    volumes:
+      - ./catalogservice:/service
     networks:
       - debug-net
     depends_on:

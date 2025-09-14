@@ -3,10 +3,10 @@
 #include <string>
 #include <string_view>
 
-namespace cartservice {
+namespace catalogservice {
 
 enum class UserType { kFirstTime, kKnown };
 
 std::string SayHelloTo(std::string_view name, UserType type);
 
-}  // namespace cartservice
+}  // namespace catalogservice

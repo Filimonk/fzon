@@ -2,7 +2,7 @@
 
 #include <greeting.hpp>
 
-namespace cartservice {
+namespace catalogservice {
 
 std::string
 Hello::HandleRequestThrow(const userver::server::http::HttpRequest& request, userver::server::request::RequestContext&)
@@ -10,4 +10,4 @@ Hello::HandleRequestThrow(const userver::server::http::HttpRequest& request, use
     return SayHelloTo(request.GetArg("name"), UserType::kFirstTime);
 }
 
-}  // namespace cartservice
+}  // namespace catalogservice

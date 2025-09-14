@@ -1,0 +1,32 @@
+FROM ghcr.io/userver-framework/ubuntu-24.04-userver:latest
+
+# Устанавливаем нужные инструменты
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/*
+
+# Создаем пользователя и группу с фиксированными UID/GID
+RUN groupadd --gid 1000 --non-unique user && \
+    useradd --uid 1000 --gid 1000 --non-unique user
+
+# Рабочая директория
+WORKDIR /service
+                                
+# В release версии мы копируем исходники
+COPY . .
+
+# Изменяем владельца файлов на user
+RUN chown -R user:user /service
+
+# Переключаемся на непривилегированного пользователя
+USER user
+
+# Собираем сервис
+RUN make build-release
+
+# Запускаем сервис
+CMD ["make", "start-release"]
+
+# TODO: Создать "чистый" слой с убунтой, перекопировать туда бинарник и конфиги
+# (их можно собрать в детерминированное место через make install-), и запускать их место make start-
+

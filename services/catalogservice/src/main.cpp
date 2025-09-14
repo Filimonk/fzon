@@ -10,7 +10,8 @@
 
 #include <userver/utils/daemon_run.hpp>
 
-#include <cart-count.hpp>
+#include <hello.hpp>
+#include <hello_postgres.hpp> 
 
 int main(int argc, char* argv[]) {
     auto component_list = userver::components::MinimalServerComponentList()
@@ -18,8 +19,9 @@ int main(int argc, char* argv[]) {
                               .Append<userver::components::TestsuiteSupport>()
                               .Append<userver::components::HttpClient>()
                               .Append<userver::clients::dns::Component>()
-                              .Append<cartservice::CartCount>()
+                              .Append<catalogservice::Hello>()
                               .Append<userver::components::Postgres>("postgres-db-1")
+                              .Append<catalogservice::HelloPostgres>()
         ;
 
     return userver::utils::DaemonMain(argc, argv, component_list);

@@ -2,7 +2,7 @@
 
 #include <userver/server/handlers/http_handler_base.hpp>
 
-namespace cartservice {
+namespace catalogservice {
 
 class Hello final : public userver::server::handlers::HttpHandlerBase {
 public:
@@ -14,4 +14,4 @@ public:
         const override;
 };
 
-}  // namespace cartservice
+}  // namespace catalogservice

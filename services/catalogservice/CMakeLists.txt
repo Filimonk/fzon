@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12...3.31)
-project(cartservice CXX)
+project(catalogservice CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(DownloadUserver)
@@ -22,7 +22,9 @@ include_directories(src)
 
 add_library(
     ${PROJECT_NAME}_objs OBJECT
-    src/cart-count.cpp #
+    src/greeting.cpp #
+    src/hello.cpp #
+    src/hello_postgres.cpp
 )
 target_link_libraries(
     ${PROJECT_NAME}_objs

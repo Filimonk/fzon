@@ -4,7 +4,7 @@
 
 #include <userver/storages/postgres/component.hpp>
 
-namespace cartservice {
+namespace catalogservice {
 
 HelloPostgres::HelloPostgres(
     const userver::components::ComponentConfig& config,
@@ -37,4 +37,4 @@ std::string HelloPostgres::
     return SayHelloTo(name, user_type);
 }
 
-}  // namespace cartservice
+}  // namespace catalogservice
