@@ -133,7 +133,7 @@ class Header {
 
     showAuthModal() {
         if (!this.authModal) {
-            this.authModal = new AuthModal(this);
+            this.authModal = new AuthModal();
         }
         this.authModal.show();
     }
