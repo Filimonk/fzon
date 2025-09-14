@@ -5,7 +5,7 @@ namespace authservice {
 std::string
 Authentication::HandleRequestThrow(const userver::server::http::HttpRequest& request, userver::server::request::RequestContext&)
     const {
-    return "{\"status\": \"approved\"}";
+    return "{\"token\": \"JWT\"}";
 }
 
 }  // namespace authservice
