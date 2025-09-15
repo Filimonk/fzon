@@ -20,11 +20,12 @@ services:
     hostname: authservice
     environment:
       # <<: *db_env
-      # DB_CONNECTION: "postgresql://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgresql:5432/${AUTH_DB_NAME}?\
-                      # options=-c%20search_path%3D${AUTH_DB_SCHEMA}"
-      DB_CONNECTION: "postgresql://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgresql:5432/${AUTH_DB_NAME}"
+      DB_CONNECTION: "postgresql://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgresql:5432/${AUTH_DB_NAME}?\
+                      options=-c%20search_path%3D${AUTH_DB_SCHEMA}"
+      # DB_CONNECTION: "postgresql://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgresql:5432/${AUTH_DB_NAME}"
       HOME: /service
       CCACHE_DIR: /service/.ccache
+      SECRET_JWT_KEY: "${SECRET_JWT_KEY}"
     security_opt:
       - seccomp=./authservice/seccomp_config.json
     command:
@@ -34,7 +35,7 @@ services:
       - sh
       - -lc
       - "make build-debug && ./build-debug/authservice --config configs/static_config.yaml \
-                                                        --config_vars configs/config_vars.yaml"
+                                                       --config_vars configs/config_vars.yaml"
       # - "make build-debug && make test-debug && ./build-debug/authservice --config configs/static_config.yaml \
                                                                            # --config_vars configs/config_vars.yaml"
     volumes:
@@ -51,7 +52,7 @@ services:
     hostname: userprofileservice
     environment:
       ###### замена переменных
-      DB_CONNECTION: "postgresql://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgresql:5432/${AUTH_DB_NAME}"
+      DB_CONNECTION: "postgresql://${USERPROFILER_DB_USER}:${USERPROFILER_DB_PASSWORD}@postgresql:5432/${USERPROFILER_DB_NAME}"
       HOME: /service
       CCACHE_DIR: /service/.ccache
     security_opt:
@@ -78,7 +79,7 @@ services:
     hostname: cartservice
     environment:
       ###### замена переменных
-      DB_CONNECTION: "postgresql://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgresql:5432/${AUTH_DB_NAME}"
+      DB_CONNECTION: "postgresql://${USERPROFILER_DB_USER}:${USERPROFILER_DB_PASSWORD}@postgresql:5432/${USERPROFILER_DB_NAME}"
       HOME: /service
       CCACHE_DIR: /service/.ccache
     security_opt:
@@ -105,7 +106,7 @@ services:
     hostname: catalogservice
     environment:
       ###### замена переменных
-      DB_CONNECTION: "postgresql://${AUTH_DB_USER}:${AUTH_DB_PASSWORD}@postgresql:5432/${AUTH_DB_NAME}"
+      DB_CONNECTION: "postgresql://${USERPROFILER_DB_USER}:${USERPROFILER_DB_PASSWORD}@postgresql:5432/${USERPROFILER_DB_NAME}"
       HOME: /service
       CCACHE_DIR: /service/.ccache
     security_opt:

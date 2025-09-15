@@ -1,6 +1,10 @@
 \connect fzon
 
-CREATE TABLE IF NOT EXISTS hello_schema.users (
-    name TEXT PRIMARY KEY,
-    count INTEGER DEFAULT(1)
+CREATE TABLE authserviceschema.users (
+    id SERIAL PRIMARY KEY,
+    login VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+

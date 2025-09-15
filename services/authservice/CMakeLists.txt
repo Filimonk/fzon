@@ -15,6 +15,17 @@ if(NOT userver_FOUND)
     download_userver(TRY_DIR third_party/userver)
 endif()
 
+# Загружаем jwt-cpp через CPM
+include(get_cpm)
+CPMAddPackage(
+    NAME jwt-cpp
+    GITHUB_REPOSITORY Thalhammer/jwt-cpp
+    GIT_TAG v0.7.1
+    OPTIONS
+        "JWT_BUILD_EXAMPLES OFF"
+        "JWT_BUILD_TESTS OFF"
+)
+
 userver_setup_environment()
 
 # Common sources
@@ -30,6 +41,7 @@ target_link_libraries(
     ${PROJECT_NAME}_objs
     PUBLIC userver::core #
            userver::postgresql
+           jwt-cpp::jwt-cpp
 )
 
 

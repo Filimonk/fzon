@@ -144,9 +144,9 @@ class AuthModal {
             } else {
                 const error = await response.json();
                 if (error.field) {
-                    this.showError(error.field, error.message);
+                    this.showError(error.field, error.error);
                 } else {
-                    this.showError('general', error.message || 'Произошла ошибка');
+                    this.showError('general', error.error || 'Произошла ошибка');
                 }
             }
         } catch (error) {
