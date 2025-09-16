@@ -136,9 +136,9 @@ body {
 }
 
 .description-part {
-    width: 145px;
+    width: 155px;
     text-align: left;
-    padding-right: 20px;
+    padding-right: 24px;
     padding-top: 13px;
     font-weight: 500;
     flex-shrink: 0;
