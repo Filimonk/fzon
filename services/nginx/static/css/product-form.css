@@ -131,7 +131,7 @@ body {
 
 .field {
     display: flex;
-    margin: 0 80px 5px;
+    margin: 0 80px 3px;
     align-items: flex-start;
 }
 
@@ -202,5 +202,9 @@ body {
     font-size: 12px;
     height: 12px;
     margin-bottom: 8px;
+    display: flex;
+    align-items: left;
+    margin-top: 2px;
+    padding-left: 15px;
 }
 

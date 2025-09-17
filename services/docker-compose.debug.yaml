@@ -106,7 +106,9 @@ services:
     hostname: catalogservice
     environment:
       ###### замена переменных
-      DB_CONNECTION: "postgresql://${USERPROFILER_DB_USER}:${USERPROFILER_DB_PASSWORD}@postgresql:5432/${USERPROFILER_DB_NAME}"
+      DB_CONNECTION: "postgresql://${CATALOG_DB_USER}:${CATALOG_DB_PASSWORD}@postgresql:5432/${CATALOG_DB_NAME}?\
+                      options=-c%20search_path%3D${CATALOG_DB_SCHEMA}"
+
       HOME: /service
       CCACHE_DIR: /service/.ccache
     security_opt:

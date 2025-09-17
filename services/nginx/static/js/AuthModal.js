@@ -140,13 +140,17 @@ class AuthModal {
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem('jwt_token', data.token);
+                alert(
+`Вход выполнен успешно!
+Ваша сессия активна в течение 5 минут. По истечении этого времени потребуется повторная авторизация.`
+                )
                 window.location.reload();
             } else {
                 const error = await response.json();
                 if (error.field) {
                     this.showError(error.field, error.error);
                 } else {
-                    this.showError('general', error.error || 'Произошла ошибка');
+                    this.showError('general', error.error || 'Произошла ошибка на сервере');
                 }
             }
         } catch (error) {
@@ -155,9 +159,17 @@ class AuthModal {
     }
 
     showError(fieldId, message) {
-        const errorElement = this.modalElement.querySelector(`#${fieldId}-error`);
-        if (errorElement) {
-            errorElement.textContent = message;
+        if (fieldId === 'general') {
+            // Показываем браузерное всплывающее окно
+            alert(message);
+        } else {
+            const errorElement = document.getElementById(`${fieldId}-error`);
+            if (errorElement) {
+                errorElement.textContent = message;
+            } else {
+                // Для общих ошибок показываем alert
+                alert(message);
+            }
         }
     }
 

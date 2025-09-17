@@ -28,7 +28,7 @@ collect-postgresql-migrations:
 
 # Поднимаем окружение в фоне, с билдом образов.
 up-debug: collect-postgresql-migrations 
-	$(COMPOSE_DEBUG) up --build -d
+	$(COMPOSE_DEBUG) up -d
 up: up-debug
 
 # Останавливаем и чистим контейнеры/сеть этого проекта.
@@ -43,7 +43,7 @@ down-clean: down-clean-debug
 
 # Перезапускаем сервис через переменную S=имя.
 restart-debug:
-	$(COMPOSE_DEBUG) restart $(S)
+	$(COMPOSE_DEBUG) up -d --force-recreate $(S)
 restart: restart-debug
 
 # Логи всех сервисов, или конкретного (через S=имя)
@@ -73,8 +73,7 @@ down-clean-release:
 
 # Перезапускаем сервис через переменную S=имя.
 restart-release:
-	$(COMPOSE_RELEASE) restart $(S)
-
+	$(COMPOSE_RELEASE) up -d --force-recreate --build $(S)
 # Логи всех сервисов, или конкретного (через S=имя)
 logs-release:
 	$(COMPOSE_RELEASE) logs -f $(S)

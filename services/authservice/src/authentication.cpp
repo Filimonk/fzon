@@ -68,9 +68,9 @@ Authentication::HandleRequestThrow(const userver::server::http::HttpRequest& req
         );
 
         if (result.Size() == 0) {
-            // Пользователь не найден
+            // Неверный логин
             request.SetResponseStatus(userver::server::http::HttpStatus::kUnauthorized);
-            return "{\"field\": \"login\", \"error\": \"Пользователь с таким логином не найден\"}";
+            return "{\"field\": \"login\", \"error\": \"Неверный логин\"}";
         }
 
         // Проверяем пароль
