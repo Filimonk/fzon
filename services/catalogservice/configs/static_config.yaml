@@ -60,6 +60,11 @@ components_manager:
             method: POST
             task_processor: main-task-processor
 
+        handler-fetch-products-bulk:
+            path: /fetch-products-bulk
+            method: GET
+            task_processor: main-task-processor
+
         postgres-db-1:
             # dbconnection: $pg-connection
             dbconnection#env: DB_CONNECTION

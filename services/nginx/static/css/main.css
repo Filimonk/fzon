@@ -33,18 +33,3 @@ body {
     margin-bottom: 30px;
 }
 
-.explore-btn {
-    display: inline-block;
-    padding: 12px 24px;
-    background-color: #005bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    font-weight: 500;
-    transition: background-color 0.2s;
-}
-
-.explore-btn:hover {
-    background-color: #004ee0;
-}
-

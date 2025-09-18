@@ -141,6 +141,8 @@ services:
       - postgresql_data:/var/lib/postgresql/data
     networks:
       - debug-net
+    ports:
+      - 5432 # только для дебаг версии
 
 volumes:
   postgresql_data:

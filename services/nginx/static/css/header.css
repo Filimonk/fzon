@@ -58,7 +58,7 @@
 }
 
 /* Кнопка каталога */
-.catalog-btn {
+.catalog-link {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -70,13 +70,15 @@
     margin-right: 20px;
     transition: background-color 0.2s;
     height: 24px;
+    
+    text-decoration: none;
 }
 
-.catalog-btn:hover {
+.catalog-link:hover {
     background-color: #1a6cff;
 }
 
-.catalog-btn span {
+.catalog-link span {
     font-size: 16px;
     font-weight: 600;
     letter-spacing: 0;
