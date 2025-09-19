@@ -106,8 +106,8 @@ body {
 
 .price {
     color: #f1117e;
-    font-weight: bold;
-    font-size: 18px;
+    font-weight: 800;
+    font-size: 22px;
     margin-bottom: 4px;
     white-space: nowrap;
     overflow: hidden;
@@ -116,8 +116,8 @@ body {
 }
 
 .seller-name {
-    color: #525252;
-    font-size: 14px;
+    color: #5c5c5c;
+    font-size: 17px;
     font-weight: 700;
     margin: 2px 0 2px;
     display: -webkit-box;
@@ -129,8 +129,8 @@ body {
 }
 
 .name {
-    font-size: 14px;
-    line-height: 1.4;
+    font-size: 17px;
+    line-height: 1.2;
     margin-bottom: 8px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -144,8 +144,8 @@ body {
     display: flex;
     align-items: center;
     gap: 4px;
-    color: #ffa900;
-    font-size: 14px;
+    color: #000;
+    font-size: 16px;
 }
 
 .rating svg {
