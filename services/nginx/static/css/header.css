@@ -161,6 +161,16 @@
     stroke: #005bff;
 }
 
+.nav-item.login span {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    text-align: center;
+    overflow: hidden;
+    width: 100%;
+    word-break: break-word;
+}
+
 .cart-count {
     position: absolute;
     top: -5px;

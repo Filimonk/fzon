@@ -92,14 +92,7 @@ class Header {
     }
 
     setUsername(name) {
-        // Проверяем длину строки
-        if (name.length > 7) {
-            // Обрезаем до 4 символов и добавляем многоточие
-            this.username = name.substring(0, 4) + '...';
-        } else {
-            // Если длина <= 7, используем оригинальную строку
-            this.username = name;
-        }
+        this.username = name;
         this.updateUsername();
     }
 
