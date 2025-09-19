@@ -131,7 +131,6 @@ body {
     display: flex;
     align-items: center;
     gap: 4px;
-    margin-top: auto;
     color: #ffa900;
     font-size: 14px;
 }
@@ -165,6 +164,55 @@ body {
 .add-to-cart svg {
     width: 18px;
     height: 18px;
+}
+
+/* Кнопка регулирования количества товара в корзине */
+.quantity-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ebf7ff;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    margin: auto 10px 10px;
+    border-radius: 9px;
+}
+
+.quantity-control-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px; /* Размер кнопки */
+    height: 42px; /* Равный ширине для квадрата */
+    background: transparent; /* Прозрачный фон */
+    border: none; /* Убираем стандартную границу */
+    border-radius: 9px; /* Закругление как у внешнего контейнера */
+    color: #005bff; /* Синий цвет иконки */
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+.quantity-control-btn:hover {
+    background: #d3e7ff; /* Легкая подсветка фона при наведении */
+}
+
+.quantity-control-btn:active {
+    transform: scale(0.95); /* Легкое сжатие при клике */
+}
+
+.quantity-control-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.quantity {
+    font-size: 16px;
+    font-weight: 500;
+    min-width: 20px;
+    text-align: center;
+    color: #333;
 }
 
 /* Адаптивность */
