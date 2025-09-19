@@ -14,7 +14,7 @@ body {
     background: #f6f6f6;
     /* background: #fff; */
     border-radius: 30px;
-    padding: 24px;
+    padding: 24px 24px 0;
     display: flex;
     /* text-align: center; */
     /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
@@ -24,13 +24,14 @@ body {
 
 /* Поле фильтров */
 .filters-box {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     width: 208px;
     height: 74%;
     max-height: calc(100vh - 100px); /* Чтобы не выходил за экран */
     overflow-y: auto;
     background: white;
     border-radius: 30px;
-    padding: 0 24px 48px;
+    padding: 0 24px 62px;
     margin: -24px 20px 0 -24px; /* /////////// */
     text-align: left;
     position: fixed;
@@ -66,7 +67,7 @@ body {
     background: #fff;
     border-radius: 12px;
     overflow: hidden;
-    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     height: 100%;
 }
