@@ -2,9 +2,14 @@ class Catalog {
     constructor() {
         this.productsGrid = document.querySelector('.products-grid');
         this.token = localStorage.getItem('jwt_token');
+        this.init();
     }
 
-    async fetchProducts() {
+    init() {
+        this.fetchAndRenderProducts();
+    }
+
+    async fetchAndRenderProducts() {
         try {
             const response = await fetch('/api/catalogservice/fetch-products-bulk', {
                 headers: {
@@ -111,15 +116,16 @@ class Catalog {
         div.textContent = text;
         return div.innerHTML;
     }
-
-    init() {
-        this.fetchProducts();
+    
+    updateProductQuantity(article, quantity) { //// change name
+        const card = this.productsGrid.querySelector(`.product-card[data-article="${article}"]`);
+        if (!card) return;
+        
+        const controlsContainer = card.querySelector('.add-to-cart, .quantity-control');
+        
+        if (controlsContainer) {
+            controlsContainer.outerHTML = this.renderCartControls(quantity, article);
+        }
     }
 }
-
-// Инициализация каталога после загрузки DOM
-document.addEventListener('DOMContentLoaded', () => {
-    const catalog = new Catalog();
-    catalog.init();
-});
 

@@ -85,6 +85,10 @@ class Header {
 
         throw new Error(`Ошибка сервера: ${response.status}`);
     }
+    
+    changeCartCount(delta) {
+        this.setCartCount(this.cartCount + delta);
+    }
 
     setCartCount(count) {
         this.cartCount = count;

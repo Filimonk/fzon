@@ -32,7 +32,8 @@
                 </div>
             </div>
             <div class="products-grid">
-                <!-- Пример одной карточки товара -->
+                <!-- Пример одной карточки товара  -->
+                <!-- 
                 <div class="product-card">
                     <div class="product-image">
                         <svg class="placeholder-image" viewBox="0 0 200 200">
@@ -64,20 +65,18 @@
                     <div class="quantity-control">
                         <button class="quantity-control-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-                                <path fill="currentColor" d="M1.333 8c0-.69.56-1.25 1.25-1.25h10.834a1.25 1.25 0 1 1 0 2.5H2.583c-.69 0-1.25-.56-1.25-1.25">
-                                </path>
+                                <path fill="currentColor" d="M1.333 8c0-.69.56-1.25 1.25-1.25h10.834a1.25 1.25 0 1 1 0 2.5H2.583c-.69 0-1.25-.56-1.25-1.25"></path>
                             </svg>
                         </button> 
                         <span class="quantity">1</span>
                         <button class="quantity-control-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-                                <path fill="currentColor" d="M8 1.333c.69 0 1.25.56 1.25 1.25V6.75h4.167a1.25 1.25 0 1 1 0 2.5H9.25v4.167a1.25 1.25 0 0 1-2.5 0V9.25H2.583a1.25 1.25 0 0 1 0-2.5H6.75V2.583c0-.69.56-1.25 1.25-1.25">
-                                </path>
+                                <path fill="currentColor" d="M8 1.333c.69 0 1.25.56 1.25 1.25V6.75h4.167a1.25 1.25 0 1 1 0 2.5H9.25v4.167a1.25 1.25 0 0 1-2.5 0V9.25H2.583a1.25 1.25 0 0 1 0-2.5H6.75V2.583c0-.69.56-1.25 1.25-1.25"></path>
                             </svg>
                         </button>
                     </div>
                 </div>
-                <!-- Добавьте остальные карточки товаров здесь -->
+                -->
             </div>
         </div>
     </main>
@@ -85,10 +84,15 @@
     <script src="js/Header.js"></script>
     <script src="js/AuthModal.js"></script>
     <script src="js/Catalog.js"></script>
+    <script src="js/CatalogButtonsControl.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const header = new Header();
             header.render('header-container');
+            
+            const catalog = new Catalog();
+            
+            const catalogButtonsControl = new CatalogButtonsControl(header, catalog);
         });
     </script>
 </body>
