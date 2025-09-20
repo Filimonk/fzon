@@ -11,6 +11,7 @@
 #include <userver/utils/daemon_run.hpp>
 
 #include <AddProduct.hpp>
+#include <FetchProductsBulk.hpp>
 
 int main(int argc, char* argv[]) {
     auto component_list = userver::components::MinimalServerComponentList()
@@ -19,6 +20,7 @@ int main(int argc, char* argv[]) {
                               .Append<userver::components::HttpClient>()
                               .Append<userver::clients::dns::Component>()
                               .Append<catalogservice::AddProduct>()
+                              .Append<catalogservice::FetchProductsBulk>()
                               .Append<userver::components::Postgres>("postgres-db-1")
         ;
 
