@@ -152,6 +152,7 @@ class Catalog {
 
             // Обновляем UI
             controlsContainer.outerHTML = this.renderCartControls(article, quantity);
+            return quantity;
         }
     }
 }

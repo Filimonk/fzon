@@ -54,12 +54,20 @@ Verify::HandleRequestThrow(const userver::server::http::HttpRequest& request,
         verifier.verify(decoded);
 
         // Проверка наличия обязательных полей
-        if (!decoded.has_payload_claim("login") ||
+        if (!decoded.has_payload_claim("user_id") ||
+            !decoded.has_payload_claim("login") ||
             !decoded.has_payload_claim("username") ||
             !decoded.has_payload_claim("date")) {
             return "{\"error\": \"Missing required claims\"}";
         }
 
+        int user_id;
+        try {
+            user_id = std::stoi(decoded.get_payload_claim("user_id").as_string());
+        } catch (const std::exception&) {
+            request.SetResponseStatus(userver::server::http::HttpStatus::kUnauthorized);
+            return "{\"error\": \"Invalid user_id in token\"}";
+        }
         const auto login = decoded.get_payload_claim("login").as_string();
         const auto username = decoded.get_payload_claim("username").as_string();
         const auto date_str = decoded.get_payload_claim("date").as_string();
@@ -70,6 +78,7 @@ Verify::HandleRequestThrow(const userver::server::http::HttpRequest& request,
         }
 
         userver::formats::json::ValueBuilder response;
+        response["user_id"] = user_id;
         response["login"] = login;
         response["username"] = username;
         response["date"] = date_str;

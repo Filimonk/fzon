@@ -50,12 +50,12 @@ std::string AddProduct::
         // Вставляем товар в базу данных
         auto result = pg_cluster_->Execute(
             userver::storages::postgres::ClusterHostType::kMaster,
-            "INSERT INTO products (name, price, description, seller_name, rating) "
-            "VALUES ($1, $2, $3, $4, $5)",
+            "INSERT INTO products (article, name, price, description, seller_name, rating) "
+            "VALUES (LPAD((NEXTVAL('product_article_seq'))::text, 4, '0'), $1, $2, $3, $4, $5)",
             name, price, description, seller_name, rating
         );
 
-        // Успешный ответ - 200 OK без тела
+        // Успешный ответ - 204 OK без тела
         request.SetResponseStatus(userver::server::http::HttpStatus::kNoContent);
         return "";
 

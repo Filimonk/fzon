@@ -22,7 +22,8 @@ include_directories(src)
 
 add_library(
     ${PROJECT_NAME}_objs OBJECT
-    src/cart-count.cpp #
+    src/cart-count.cpp
+    src/ChangeCartProductCount.cpp
 )
 target_link_libraries(
     ${PROJECT_NAME}_objs

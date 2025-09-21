@@ -45,7 +45,7 @@ std::string GetHeaderData::HandleRequestThrow(
         response = http_client_.CreateRequest()
             .get()
             .url("http://cartservice:8080/cart-count/")
-            .headers({{"X-Login", login}})  // Передаем логин в заголовке
+            .headers({{"Authorization", auth_header}})
             .timeout(std::chrono::seconds(2))
             .perform();
 

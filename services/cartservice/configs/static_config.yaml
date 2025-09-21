@@ -60,6 +60,11 @@ components_manager:
             method: GET
             task_processor: main-task-processor
 
+        handler-change-cart-product-count:
+            path: /change-cart-product-count
+            method: POST
+            task_processor: main-task-processor
+
         postgres-db-1:
             # dbconnection: $pg-connection
             dbconnection#env: DB_CONNECTION

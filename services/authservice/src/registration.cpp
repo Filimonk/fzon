@@ -22,11 +22,12 @@ std::string HashPassword(const std::string& password) {
     return userver::crypto::hash::Sha256(password);
 }
 
-std::string GenerateJwtToken(const std::string& login, const std::string& username) {
+std::string GenerateJwtToken(const int user_id, const std::string& login, const std::string& username) {
     // Создаем JWT токен
     auto token = jwt::create()
         .set_issuer("authservice")
         .set_type("JWS")
+        .set_payload_claim("user_id", jwt::claim(std::to_string(user_id)))
         .set_payload_claim("login", jwt::claim(login))
         .set_payload_claim("username", jwt::claim(username))
         .set_payload_claim("date", jwt::claim(std::to_string(
@@ -84,13 +85,15 @@ Registration::HandleRequestThrow(const userver::server::http::HttpRequest& reque
     // Хешируем пароль
     const auto hashed_password = HashPassword(password);
 
-    // Сохраняем пользователя в базу данных
+    // Сохраняем пользователя в базу данных и получаем его id
+    int user_id;
     try {
         auto result = pg_cluster_->Execute(
             userver::storages::postgres::ClusterHostType::kMaster,
-            "INSERT INTO users (login, name, password_hash) VALUES ($1, $2, $3)",
+            "INSERT INTO users (login, name, password_hash) VALUES ($1, $2, $3) RETURNING id",
             login, name, hashed_password
         );
+        user_id = result[0]["id"].As<int>();
     } catch (const std::exception& ex) {
         LOG_ERROR() << "Database error while inserting user: " << ex.what();
         request.SetResponseStatus(userver::server::http::HttpStatus::kInternalServerError);
@@ -100,7 +103,7 @@ Registration::HandleRequestThrow(const userver::server::http::HttpRequest& reque
     // Генерируем JWT токен
     std::string token;
     try {
-        token = GenerateJwtToken(login, name);
+        token = GenerateJwtToken(user_id, login, name);
     } catch (const std::exception& ex) {
         LOG_ERROR() << "JWT generation error: " << ex.what();
         request.SetResponseStatus(userver::server::http::HttpStatus::kInternalServerError);

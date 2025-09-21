@@ -55,15 +55,32 @@ class CatalogButtonsControl {
         }
         
         this.header.changeCartCount(delta);
-        this.catalog.changeProductQuantity(article, delta);
+        const productQuantity = this.catalog.changeProductQuantity(article, delta);
         
         try {
+            const response = await fetch('/api/cartservice/change-cart-product-count', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.token}`
+                },
+                body: JSON.stringify({
+                    article: article,
+                    productQuantity: productQuantity
+                })
+            });
 
+            if (response.ok) {
+            } else if (response.status === 401 || response.status === 403) {
+                // Токен недействителен
+                window.location.reload();
+            } else {
+                console.error('Ошибка сервера:', response.status);
+                window.location.reload();
+            }
         } catch (error) {
             console.error('Ошибка при изменении количества товара:', error);
-
-            // В случае ошибки отменяем изменения в UI
-            // Можно добавить уведомление пользователю
+            window.location.reload();
         }
     }
 }

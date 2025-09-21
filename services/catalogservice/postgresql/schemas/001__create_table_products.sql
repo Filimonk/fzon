@@ -1,7 +1,9 @@
 \connect fzon
 
+CREATE SEQUENCE catalogserviceschema.product_article_seq START 1;
+
 CREATE TABLE IF NOT EXISTS catalogserviceschema.products (
-    id SERIAL PRIMARY KEY,
+    article VARCHAR(20) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     description TEXT,

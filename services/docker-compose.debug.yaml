@@ -78,8 +78,8 @@ services:
       dockerfile: Dockerfile.debug
     hostname: cartservice
     environment:
-      ###### замена переменных
-      DB_CONNECTION: "postgresql://${USERPROFILER_DB_USER}:${USERPROFILER_DB_PASSWORD}@postgresql:5432/${USERPROFILER_DB_NAME}"
+      DB_CONNECTION: "postgresql://${CART_DB_USER}:${CART_DB_PASSWORD}@postgresql:5432/${CART_DB_NAME}?\
+                      options=-c%20search_path%3D${CART_DB_SCHEMA}"
       HOME: /service
       CCACHE_DIR: /service/.ccache
     security_opt:

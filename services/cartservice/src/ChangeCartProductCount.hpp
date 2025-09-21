@@ -7,11 +7,11 @@
 
 namespace cartservice {
 
-class CartCount final : public userver::server::handlers::HttpHandlerBase {
+class ChangeCartProductCount final : public userver::server::handlers::HttpHandlerBase {
 public:
-    static constexpr std::string_view kName = "handler-cart-count";
+    static constexpr std::string_view kName = "handler-change-cart-product-count";
 
-    CartCount(const userver::components::ComponentConfig&, const userver::components::ComponentContext&);
+    ChangeCartProductCount(const userver::components::ComponentConfig&, const userver::components::ComponentContext&);
 
     std::string HandleRequestThrow(const userver::server::http::HttpRequest&, userver::server::request::RequestContext&)
         const override;
