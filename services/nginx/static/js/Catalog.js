@@ -74,16 +74,16 @@ class Catalog {
                     <span>${product.rating.toFixed(1)}</span>
                 </div>
             </div>
-            ${this.renderCartControls(product.productQuantity)}
+            ${this.renderCartControls(article, product.productQuantity)}
         `;
 
         return card;
     }
 
-    renderCartControls(quantity) {
+    renderCartControls(article, quantity) {
         if (quantity === 0) {
             return `
-                <div class="add-to-cart">
+                <div class="add-to-cart" data-article="${article}" data-action="increase">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="9" cy="21" r="1"></circle>
                         <circle cx="20" cy="21" r="1"></circle>
@@ -95,13 +95,13 @@ class Catalog {
         } else {
             return `
                 <div class="quantity-control">
-                    <button class="quantity-control-btn">
+                    <button class="quantity-control-btn" data-article="${article}" data-action="decrease">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
                             <path fill="currentColor" d="M1.333 8c0-.69.56-1.25 1.25-1.25h10.834a1.25 1.25 0 1 1 0 2.5H2.583c-.69 0-1.25-.56-1.25-1.25"></path>
                         </svg>
                     </button> 
                     <span class="quantity">${quantity}</span>
-                    <button class="quantity-control-btn">
+                    <button class="quantity-control-btn" data-article="${article}" data-action="increase">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
                             <path fill="currentColor" d="M8 1.333c.69 0 1.25.56 1.25 1.25V6.75h4.167a1.25 1.25 0 1 1 0 2.5H9.25v4.167a1.25 1.25 0 0 1-2.5 0V9.25H2.583a1.25 1.25 0 0 1 0-2.5H6.75V2.583c0-.69.56-1.25 1.25-1.25"></path>
                         </svg>
@@ -117,14 +117,41 @@ class Catalog {
         return div.innerHTML;
     }
     
-    updateProductQuantity(article, quantity) { //// change name
+    changeProductQuantity(article, delta) {
         const card = this.productsGrid.querySelector(`.product-card[data-article="${article}"]`);
         if (!card) return;
         
         const controlsContainer = card.querySelector('.add-to-cart, .quantity-control');
         
         if (controlsContainer) {
-            controlsContainer.outerHTML = this.renderCartControls(quantity, article);
+            let quantity;
+
+            // Определяем текущее количество
+            if (controlsContainer.classList.contains('add-to-cart')) {
+                quantity = 0;
+            } else {
+                const quantityElement = controlsContainer.querySelector('.quantity');
+                quantity = parseInt(quantityElement.textContent, 10);
+
+                // Проверяем, что quantity - число
+                if (isNaN(quantity)) {
+                    quantity = 0;
+                }
+            }
+
+            // Изменяем количество на дельту
+            quantity += delta;
+
+            // Не позволяем количеству быть отрицательным
+            if (quantity < 0) {
+                quantity = 0;
+            }
+
+            // Обеспечиваем, что quantity - целое число
+            quantity = Math.floor(quantity);
+
+            // Обновляем UI
+            controlsContainer.outerHTML = this.renderCartControls(article, quantity);
         }
     }
 }

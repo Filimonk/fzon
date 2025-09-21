@@ -19,64 +19,51 @@ class CatalogButtonsControl {
     }
 
     handleProductClick(event) {
-        const target = event.target;
-        const card = target.closest('.product-card');
+        const target = event.target.closest('[data-article]');
         
-        if (!card) return;
+        if (!target) return;
+        
+        const article = target.dataset.article;
+        const action = target.dataset.action;
+        console.log(article);
+        console.log(action);
 
-        const article = card.dataset.article;
+        if (!article || !action) return;
 
-        // Определяем тип действия
-        if (target.closest('.add-to-cart')) {
-            this.addToCart(article);
-        } else if (target.closest('.quantity-control-btn')) {
-            const btn = target.closest('.quantity-control-btn');
-            const isIncrease = btn.querySelector('path[d*="M8 1.333"]'); // Упрощенная проверка для увеличения
-            if (isIncrease) {
-                this.changeQuantity(article, 1);
-            } else {
-                this.changeQuantity(article, -1);
-            }
+        switch (action) {
+            case 'increase':
+                this.increaseQuantity(article);
+                break;
+            case 'decrease':
+                this.decreaseQuantity(article);
+                break;
         }
     }
 
-    async addToCart(article) {
+    async increaseQuantity(article) {
         await this.changeQuantity(article, 1);
     }
 
-    async changeQuantity(article, delta) {
-        try {
-            const response = await fetch('/api/cartservice/change-cart-product-count', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.token}`
-                },
-                body: JSON.stringify({
-                    article: article,
-                    delta: delta
-                })
-            });
+    async decreaseQuantity(article) {
+        await this.changeQuantity(article, -1);
+    }
 
-            if (response.ok) {
-                const data = await response.json();
-                
-                // Обновляем хедер
-                this.header.setCartCount(data.totalCount);
-                
-                // Обновляем каталог
-                this.catalog.updateProductQuantity(article, data.productCount);
-                
-            } else if (response.status === 401 || response.status === 403) {
-                // Токен недействителен
-                localStorage.removeItem('jwt_token');
-                this.token = null;
-                console.error('Токен недействителен');
-            } else {
-                console.error('Ошибка сервера:', response.status);
-            }
+    async changeQuantity(article, delta) {
+        if (!this.header.isAuth()) {
+            this.header.showAuthModal();
+            return;
+        }
+        
+        this.header.changeCartCount(delta);
+        this.catalog.changeProductQuantity(article, delta);
+        
+        try {
+
         } catch (error) {
             console.error('Ошибка при изменении количества товара:', error);
+
+            // В случае ошибки отменяем изменения в UI
+            // Можно добавить уведомление пользователю
         }
     }
 }

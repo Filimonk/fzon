@@ -87,7 +87,17 @@ class Header {
     }
     
     changeCartCount(delta) {
-        this.setCartCount(this.cartCount + delta);
+        let newCount = this.cartCount + delta;
+
+        // Проверяем, чтобы количество не было отрицательным
+        if (newCount < 0) {
+            newCount = 0;
+        }
+
+        // Обеспечиваем, что это целое число
+        newCount = Math.floor(newCount);
+
+        this.setCartCount(newCount);
     }
 
     setCartCount(count) {
@@ -102,6 +112,10 @@ class Header {
 
     setAuthStatus(status_var) {
         this.authStatus = status_var;
+    }
+    
+    isAuth() {
+        return this.authStatus;
     }
 
     updateCartCount() {
