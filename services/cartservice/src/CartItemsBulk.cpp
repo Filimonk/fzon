@@ -1,13 +1,13 @@
-#include <cart-count.hpp>
+#include <CartItemsBulk.hpp>
 
 #include <userver/storages/postgres/component.hpp>
-#include <userver/server/http/http_status.hpp>
 #include <userver/formats/json.hpp>
+#include <userver/server/http/http_status.hpp>
 #include <userver/clients/http/component.hpp>
 
 namespace cartservice {
 
-CartCount::CartCount(
+CartItemsBulk::CartItemsBulk(
     const userver::components::ComponentConfig& config,
     const userver::components::ComponentContext& component_context
 )
@@ -15,10 +15,10 @@ CartCount::CartCount(
       pg_cluster_(component_context.FindComponent<userver::components::Postgres>("postgres-db-1").GetCluster()),
       http_client_(component_context.FindComponent<userver::components::HttpClient>().GetHttpClient()) {}
 
-std::string CartCount::
+std::string CartItemsBulk::
     HandleRequestThrow(const userver::server::http::HttpRequest& request, userver::server::request::RequestContext&)
         const {
-    // Проверяем заголовок Authorization
+    // Проверяем авторизацию
     const auto auth_header = request.GetHeader("Authorization");
     if (auth_header.empty()) {
         request.SetResponseStatus(userver::server::http::HttpStatus::kUnauthorized);
@@ -43,27 +43,42 @@ std::string CartCount::
         const auto json_body = userver::formats::json::FromString(response->body());
         const auto user_id = json_body["user_id"].As<int>();
 
-        // Суммируем количество товаров в корзине
-        auto result = pg_cluster_->Execute(
-            userver::storages::postgres::ClusterHostType::kMaster,
-            "SELECT SUM(quantity) as total_count FROM cart WHERE user_id = $1",
-            user_id
-        );
+        // Парсим тело запроса
+        const auto request_json = userver::formats::json::FromString(request.RequestBody());
+        const auto articles = request_json["articles"].As<std::vector<std::string>>();
 
-        int cart_count = 0;
-        if (!result[0]["total_count"].IsNull()) {
-            cart_count = result[0]["total_count"].As<int>();
+        std::string query = "SELECT article, quantity FROM cart WHERE user_id = $1";
+        if (!articles.empty()) {
+            query += " AND article = ANY($2)";
         }
 
+        auto result = pg_cluster_->Execute(
+            userver::storages::postgres::ClusterHostType::kMaster,
+            query,
+            user_id,
+            articles
+        );
+
         // Формируем ответ
-        userver::formats::json::ValueBuilder response_json;
-        response_json["cartCount"] = cart_count;
+        userver::formats::json::ValueBuilder cart_items_builder(
+            userver::formats::common::Type::kArray
+        );
+
+        for (const auto& row : result) {
+            userver::formats::json::ValueBuilder item_builder;
+            item_builder["article"] = row["article"].As<std::string>();
+            item_builder["quantity"] = row["quantity"].As<int>();
+            cart_items_builder.PushBack(item_builder.ExtractValue());
+        }
+        
+        userver::formats::json::ValueBuilder response_builder;
+        response_builder["cartItems"] = cart_items_builder;
 
         request.GetHttpResponse().SetContentType("application/json");
-        return userver::formats::json::ToString(response_json.ExtractValue());
+        return userver::formats::json::ToString(response_builder.ExtractValue());
 
     } catch (const std::exception& ex) {
-        LOG_ERROR() << "Error while getting cart count: " << ex.what();
+        LOG_ERROR() << "Error while fetching cart items bulk: " << ex.what();
         request.SetResponseStatus(userver::server::http::HttpStatus::kInternalServerError);
         return "";
     }

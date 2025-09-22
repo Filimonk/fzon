@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS catalogserviceschema.products (
     article VARCHAR(20) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    description TEXT,
+    description TEXT NOT NULL,
     seller_name VARCHAR(255) NOT NULL,
-    rating DECIMAL(2, 1),
+    rating DECIMAL(2, 1) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
