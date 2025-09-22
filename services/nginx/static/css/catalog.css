@@ -143,6 +143,7 @@ body {
 .rating {
     display: flex;
     align-items: center;
+    margin-top: auto;
     gap: 4px;
     color: #000;
     font-size: 16px;
