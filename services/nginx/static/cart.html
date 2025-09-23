@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fzon маркетплейс</title>
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/cart.css">
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <main class="main-content">
+        <div class="cart-box">
+            <div class="cart-content-box">
+                <p class="placeholder-text">
+                    Здесь будут ваши товары, добавленные в корзину.<br>
+                    Пока просматривать и управлять этим списком можно только
+                    <a href="http://продавец.фзон.рф/catalog.html" style="color: #2c5aa0;">
+                        <b>через каталог</b>
+                    </a>
+                    .<br><br>
+                    На этой же страничке вы можете оформить заказ - просто используйте кнопку справа!<br>
+                    (не забудте войти в свой аккаунт, пополнить баланс и добавить товары в корзину)
+                </p>
+            </div>
+            <div class="create-order-box">
+                <div class="button-box">
+                    <div class="button-box-content">
+                        <button class="" style="">
+                            <div class="">
+                                    Перейти к оформлению
+                            </div>
+                        </button> 
+                        <div class="" style="color:#707F8D;">
+                            <span class="">Доступные способы и время доставки можно выбрать при оформлении заказа</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="cart-info-box">
+                    
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/Header.js"></script>
+    <script src="js/AuthModal.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = new Header();
+            header.render('header-container');
+        });
+    </script>
+</body>
+</html>
+
