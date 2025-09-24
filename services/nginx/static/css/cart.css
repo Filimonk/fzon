@@ -136,16 +136,16 @@ body {
     color: #707F8D;
 }
 
-.price, .discount {
+.sum, .discount {
     margin-bottom: 12px;
 }
 
-.price .left, .discount .left {
+.sum .left, .discount .left {
     font-size: 14px;
     line-height: 18px;
 }
 
-.price .right {
+.sum .right {
     font-size: 14px;
     line-height: 18px;
     font-weight: 700;
@@ -158,7 +158,7 @@ body {
     font-weight: 700;
 }
 
-.finale-price-with-card {
+.finale-sum-with-card {
     margin-top: 22px;
     border-top-width: 1px;
     border-top-style: solid;
@@ -166,13 +166,13 @@ body {
     padding-top: 22px;
 }
 
-.finale-price-with-card .left {
+.finale-sum-with-card .left {
     font-size: 20px;
     line-height: 26px;
     font-weight: 700;
 }
 
-.finale-price-with-card .right {
+.finale-sum-with-card .right {
     color: rgb(16, 196, 76);
     text-decoration-line: ;
     font-size: 20px;
@@ -180,19 +180,19 @@ body {
     font-weight: 700;
 }
 
-.finale-price-without-card {
+.finale-sum-without-card {
     margin-top: 6px;
     color: rgb(102, 118, 133);
 }
 
-.finale-price-without-card .left {
+.finale-sum-without-card .left {
     font-size: 14px;
     font-weight: 400;
     letter-spacing: 0;
     line-height: 20px;
 }
 
-.finale-price-without-card .right {
+.finale-sum-without-card .right {
     font-size: 14px;
     font-weight: 600;
     letter-spacing: 0;

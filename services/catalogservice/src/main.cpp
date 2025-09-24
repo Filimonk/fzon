@@ -12,6 +12,7 @@
 
 #include <AddProduct.hpp>
 #include <FetchProductsBulk.hpp>
+#include <FetchPricesBulk.hpp>
 
 int main(int argc, char* argv[]) {
     auto component_list = userver::components::MinimalServerComponentList()
@@ -21,6 +22,7 @@ int main(int argc, char* argv[]) {
                               .Append<userver::clients::dns::Component>()
                               .Append<catalogservice::AddProduct>()
                               .Append<catalogservice::FetchProductsBulk>()
+                              .Append<catalogservice::FetchPricesBulk>()
                               .Append<userver::components::Postgres>("postgres-db-1")
         ;
 

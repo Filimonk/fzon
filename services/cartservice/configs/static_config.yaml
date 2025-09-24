@@ -70,6 +70,16 @@ components_manager:
             method: POST
             task_processor: main-task-processor
 
+        handler-order-data:
+            path: /order-data
+            method: GET
+            task_processor: main-task-processor
+
+        handler-create-order:
+            path: /create-order
+            method: POST
+            task_processor: main-task-processor
+
         postgres-db-1:
             # dbconnection: $pg-connection
             dbconnection#env: DB_CONNECTION

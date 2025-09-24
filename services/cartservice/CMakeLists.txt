@@ -25,6 +25,8 @@ add_library(
     src/cart-count.cpp
     src/ChangeCartProductCount.cpp
     src/CartItemsBulk.cpp
+    src/OrderData.cpp
+    src/CreateOrder.cpp
 )
 target_link_libraries(
     ${PROJECT_NAME}_objs

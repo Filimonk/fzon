@@ -13,6 +13,8 @@
 #include <cart-count.hpp>
 #include <ChangeCartProductCount.hpp>
 #include <CartItemsBulk.hpp>
+#include <OrderData.hpp>
+#include <CreateOrder.hpp>
 
 int main(int argc, char* argv[]) {
     auto component_list = userver::components::MinimalServerComponentList()
@@ -23,6 +25,8 @@ int main(int argc, char* argv[]) {
                               .Append<cartservice::CartCount>()
                               .Append<cartservice::ChangeCartProductCount>()
                               .Append<cartservice::CartItemsBulk>()
+                              .Append<cartservice::OrderData>()
+                              .Append<cartservice::CreateOrder>()
                               .Append<userver::components::Postgres>("postgres-db-1")
         ;
 
