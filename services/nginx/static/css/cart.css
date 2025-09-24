@@ -60,7 +60,7 @@ body {
 }
 
 .button-box-content {
-    padding: 24px;
+    padding: 30px;
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-bottom-color: #e0e6ef;
@@ -70,10 +70,7 @@ body {
     border-radius: 12px;
     padding: 16px 24px;
     width: 100%;
-    color: #fff;
-    background-color: #10c44c;
     border-width: 0;
-    cursor: pointer;
     
     font-size: 16px;
     font-weight: 600;
@@ -81,8 +78,19 @@ body {
     line-height: 24px;
 }
 
-.create-order-button:hover {
+.create-order-button.enable {
+    cursor: pointer;
+    color: #fff;
+    background-color: #10c44c;
+}
+
+.create-order-button.enable:hover {
     background-color: #28ca5e;
+}
+
+.create-order-button.disable {
+    color: #959698;
+    background-color: #f5f7fa;
 }
 
 .text-after-button {
@@ -101,7 +109,7 @@ body {
 }
 
 .cart-info-box-content {
-    padding: 24px;
+    padding: 30px;
     align-self: stretch;
 }
 
@@ -151,11 +159,11 @@ body {
 }
 
 .finale-price-with-card {
-    margin-top: 16px;
+    margin-top: 22px;
     border-top-width: 1px;
     border-top-style: solid;
     border-top-color: #e0e6ef;
-    padding-top: 16px;
+    padding-top: 22px;
 }
 
 .finale-price-with-card .left {
