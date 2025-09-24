@@ -66,8 +66,128 @@ body {
     border-bottom-color: #e0e6ef;
 }
 
+.create-order-button {
+    border-radius: 12px;
+    padding: 16px 24px;
+    width: 100%;
+    color: #fff;
+    background-color: #10c44c;
+    border-width: 0;
+    cursor: pointer;
+    
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 24px;
+}
+
+.create-order-button:hover {
+    background-color: #28ca5e;
+}
+
+.text-after-button {
+    margin-top: 12px;
+    color: #707F8D;
+    font-size: 14px;
+    line-height: 18px;
+}
+
 .cart-info-box {
-    height: 100px;
-    width: 100px;
+    width: 100%;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.cart-info-box-content {
+    padding: 24px;
+    align-self: stretch;
+}
+
+.cart-info-box-line {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.first-header {
+    padding-bottom: 16px;
+}
+
+.first-header .left {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4em;
+}
+
+.first-header .right {
+    font-size: 14px;
+    line-height: 1.29em;
+    color: #707F8D;
+}
+
+.price, .discount {
+    margin-bottom: 12px;
+}
+
+.price .left, .discount .left {
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.price .right {
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 700;
+}
+
+.discount .right {
+    color: #f1117e;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 700;
+}
+
+.finale-price-with-card {
+    margin-top: 16px;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: #e0e6ef;
+    padding-top: 16px;
+}
+
+.finale-price-with-card .left {
+    font-size: 20px;
+    line-height: 26px;
+    font-weight: 700;
+}
+
+.finale-price-with-card .right {
+    color: rgb(16, 196, 76);
+    text-decoration-line: ;
+    font-size: 20px;
+    line-height: 26px;
+    font-weight: 700;
+}
+
+.finale-price-without-card {
+    margin-top: 6px;
+    color: rgb(102, 118, 133);
+}
+
+.finale-price-without-card .left {
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 20px;
+}
+
+.finale-price-without-card .right {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 20px;
 }
 
