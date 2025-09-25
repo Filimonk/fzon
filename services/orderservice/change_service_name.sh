@@ -1,0 +1,1 @@
+../../scripts/change_service_name.sh

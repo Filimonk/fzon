@@ -89,12 +89,12 @@ class Cart {
             if (this.button.classList.contains('disable')) return;
 
             try {
-                // const token = IdempotencyToken.generate();
+                const token = IdempotencyToken.generate();
                 const response = await fetch('/api/cartservice/create-order', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${this.token}`,
-                        // 'Idempotency-Token': token
+                        'Idempotency-Token': token
                     }
                 });
                 
@@ -104,10 +104,11 @@ class Cart {
                 }
 
                 if (response.status === 204) {
-                    alert('Ваш заказ успешно создан. Его оплата будет проведена в течении 10 секунд, если средств на счете достаточно, то она будет проведена успешно с вероятностью 50%. Если оплата не удастся, товары вернутся обратно в корзину, и вы сможете повторить попытку оплаты снова.\n\nЗа ходом исполнения вашего заказа можете следить на вкладке "Заказы"');
+                    alert('Ваш заказ успешно создан. Его оплата будет проведена в течении 10 секунд.\n\nЕсли средств на счете достаточно, то она будет проведена успешно с вероятностью 50%. Если оплата не удастся, товары вернутся обратно в корзину, и вы сможете повторить попытку оплаты снова.\n\nЗа ходом исполнения вашего заказа можете следить на вкладке "Заказы"');
                     location.reload();
                 } else {
                     throw new Error(`HTTP error: ${response.status}`);
+                    location.reload();
                 }
 
             } catch (error) {
@@ -123,8 +124,8 @@ class Cart {
 }
 
 // Класс для генерации токена идемпотентности
-// class IdempotencyToken {
-    // static generate() {
-    // }
-// }
+class IdempotencyToken {
+    static generate() {
+    }
+}
 

@@ -128,6 +128,35 @@ services:
     depends_on:
       - postgresql
   
+  orderservice:
+    build:
+      context: ./orderservice
+      dockerfile: Dockerfile.debug
+    hostname: orderservice
+    environment:
+      ###### замена переменных
+      DB_CONNECTION: "postgresql://${ORDER_DB_USER}:${ORDER_DB_PASSWORD}@postgresql:5432/${ORDER_DB_NAME}?\
+                      options=-c%20search_path%3D${ORDER_DB_SCHEMA}"
+
+      HOME: /service
+      CCACHE_DIR: /service/.ccache
+    security_opt:
+      - seccomp=./orderservice/seccomp_config.json
+    command:
+      - ./run_as_user.sh
+      - "${UID}"
+      - "${GID}"
+      - sh
+      - -lc
+      - "make build-debug && ./build-debug/orderservice --config configs/static_config.yaml \
+                                                          --config_vars configs/config_vars.yaml"
+    volumes:
+      - ./orderservice:/service
+    networks:
+      - debug-net
+    depends_on:
+      - postgresql
+  
   postgresql:
     container_name: postgresql
     image: postgres:17
