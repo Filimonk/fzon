@@ -60,6 +60,11 @@ components_manager:
             method: POST
             task_processor: main-task-processor
 
+        handler-payment-result:
+            path: /payment-result
+            method: POST
+            task_processor: main-task-processor
+
         postgres-db-1:
             # dbconnection: $pg-connection
             dbconnection#env: DB_CONNECTION
@@ -67,3 +72,6 @@ components_manager:
             dns_resolver: async
             sync-start: true
             connlimit_mode: manual
+        
+        outbox-worker:
+

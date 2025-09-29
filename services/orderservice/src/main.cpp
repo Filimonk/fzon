@@ -11,6 +11,8 @@
 #include <userver/utils/daemon_run.hpp>
 
 #include <CreateOrder.hpp>
+#include <PaymentResult.hpp>
+#include <OutboxWorker.hpp>
 
 int main(int argc, char* argv[]) {
     auto component_list = userver::components::MinimalServerComponentList()
@@ -19,6 +21,8 @@ int main(int argc, char* argv[]) {
                               .Append<userver::components::HttpClient>()
                               .Append<userver::clients::dns::Component>()
                               .Append<orderservice::CreateOrder>()
+                              .Append<orderservice::PaymentResult>()
+                              .Append<orderservice::OutboxWorker>()
                               .Append<userver::components::Postgres>("postgres-db-1")
         ;
 

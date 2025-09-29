@@ -137,6 +137,9 @@ services:
       ###### замена переменных
       DB_CONNECTION: "postgresql://${ORDER_DB_USER}:${ORDER_DB_PASSWORD}@postgresql:5432/${ORDER_DB_NAME}?\
                       options=-c%20search_path%3D${ORDER_DB_SCHEMA}"
+      
+      # KAFKA_BROKERS: "${KAFKA_BROKERS}"
+      # KAFKA_GROUP_ID: "${ORDERSERVICE_KAFKA_GROUP_NAME}"
 
       HOME: /service
       CCACHE_DIR: /service/.ccache
@@ -156,6 +159,7 @@ services:
       - debug-net
     depends_on:
       - postgresql
+      # - kafka
   
   postgresql:
     container_name: postgresql
@@ -172,6 +176,30 @@ services:
       - debug-net
     ports:
       - 5432 # только для дебаг версии
+      
+  # zookeeper:
+    # image: confluentinc/cp-zookeeper:7.4.0
+    # hostname: zookeeper
+    # container_name: zookeeper
+    # environment:
+      # ZOOKEEPER_CLIENT_PORT: 2181
+      # ZOOKEEPER_TICK_TIME: 2000
+    # networks:
+      # - debug-net
+
+  # kafka:
+    # image: confluentinc/cp-kafka:7.4.0
+    # environment:
+      # KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      # KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      # KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      # KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    # ports:
+      # - 9092 # только для дебаг версии
+    # networks:
+      # - debug-net
+    # depends_on:
+      # - zookeeper
 
 volumes:
   postgresql_data:

@@ -84,14 +84,16 @@ std::string OrderData::
             .perform();
 
         if (price_response->status_code() != 200) {
-            LOG_ERROR() << "Catalogservice returned error: " << price_response->status_code();
-            request.SetResponseStatus(userver::server::http::HttpStatus::kInternalServerError);
-            return "{\"error\": \"Failed to fetch product prices\"}";
+            request.SetResponseStatus(userver::server::http::HttpStatus::kFailedDependency);
+            return R"({"error": "Failed to fetch prices from catalogservice"})";
         }
 
-        // Парсим ответ от catalogservice
         const auto price_json = userver::formats::json::FromString(price_response->body());
-        const auto prices = price_json["prices"];
+        std::unordered_map<std::string, double> prices;
+        for (const auto& price_entry : price_json["prices"]) {
+            prices[price_entry["article"].As<std::string>()] =
+                price_entry["price"].As<double>();
+        }
 
         // Вычисляем общее количество и сумму
         int cart_count = 0;
@@ -102,8 +104,8 @@ std::string OrderData::
             cart_count += quantity;
 
             // Ищем цену товара в ответе
-            if (prices.HasMember(article)) {
-                const auto price = prices[article].As<double>();
+            if (prices.find(article) != prices.end()) {
+                const auto price = prices[article];
                 total_sum += price * quantity;
             } else {
                 LOG_ERROR() << "Price not found for article: " << article;

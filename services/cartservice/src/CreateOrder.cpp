@@ -1,6 +1,7 @@
 #include <CreateOrder.hpp>
 
-#include <utility> 
+#include <utility>
+#include <unordered_map>
 
 #include <userver/storages/postgres/component.hpp>
 #include <userver/formats/json.hpp>
@@ -27,13 +28,6 @@ std::string CreateOrder::
         return "";
     }
 
-    // Получаем токен идемпотентности
-    const auto idempotency_token = request.GetHeader("Idempotency-Token");
-    if (idempotency_token.empty()) {
-        request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
-        return "{\"error\": \"Idempotency-Token header is required\"}";
-    }
-
     try {
         // Проверяем JWT токен через authservice
         auto auth_response = http_client_.CreateRequest()
@@ -52,7 +46,7 @@ std::string CreateOrder::
         const auto json_body = userver::formats::json::FromString(auth_response->body());
         const auto user_id = json_body["user_id"].As<int>();
 
-        // Получаем всю корзину пользователя
+        // Получаем корзину пользователя
         auto cart_result = pg_cluster_->Execute(
             userver::storages::postgres::ClusterHostType::kMaster,
             "SELECT article, quantity FROM cart WHERE user_id = $1",
@@ -61,12 +55,42 @@ std::string CreateOrder::
 
         if (cart_result.Size() == 0) {
             request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
-            return "{\"error\": \"Cart is empty\"}";
+            return R"({"error": "Cart is empty"})";
         }
 
-        // Формируем JSON с корзиной для передачи в orderservice
+        // Собираем артикулы для запроса в catalogservice
+        userver::formats::json::ValueBuilder catalog_request;
+        userver::formats::json::ValueBuilder articles_json;
+
+        for (const auto& row : cart_result) {
+            articles_json.PushBack(row["article"].As<std::string>());
+        }
+        catalog_request["articles"] = articles_json;
+
+        // Запрашиваем цены у catalogservice
+        auto catalog_response = http_client_.CreateRequest()
+            .post()
+            .url("http://catalogservice:8080/fetch-prices-bulk")
+            // .headers({{"Authorization", auth_header}})
+            .data(userver::formats::json::ToString(catalog_request.ExtractValue()))
+            .timeout(std::chrono::seconds(3))
+            .perform();
+
+        if (catalog_response->status_code() != 200) {
+            request.SetResponseStatus(userver::server::http::HttpStatus::kFailedDependency);
+            return R"({"error": "Failed to fetch prices from catalogservice"})";
+        }
+
+        const auto catalog_json = userver::formats::json::FromString(catalog_response->body());
+        std::unordered_map<std::string, double> price_map;
+        for (const auto& price_entry : catalog_json["prices"]) {
+            price_map[price_entry["article"].As<std::string>()] =
+                price_entry["price"].As<double>();
+        }
+
+        // Формируем JSON корзины с ценами
         userver::formats::json::ValueBuilder cart_items;
-        std::vector<std::pair <std::string, int> > articles_to_remove;
+        std::vector<std::pair<std::string, int>> articles_to_remove;
 
         for (const auto& row : cart_result) {
             userver::formats::json::ValueBuilder item;
@@ -75,23 +99,28 @@ std::string CreateOrder::
 
             item["article"] = article;
             item["quantity"] = quantity;
-            cart_items.PushBack(std::move(item));
 
+            if (price_map.find(article) != price_map.end()) {
+                item["price"] = price_map[article];
+            } else {
+                // Если для артикула не пришла цена
+                request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
+                return R"({"error": "Some articles missing prices"})";
+            }
+
+            cart_items.PushBack(std::move(item));
             articles_to_remove.push_back({article, quantity});
         }
 
-        // Формируем запрос к orderservice
+        // Финальный JSON для orderservice
         userver::formats::json::ValueBuilder order_request;
         order_request["cart_items"] = cart_items;
-        order_request["idempotency_token"] = idempotency_token;
 
-        // Отправляем запрос в orderservice
         auto order_response = http_client_.CreateRequest()
             .post()
             .url("http://orderservice:8080/create-order")
             .headers({
-                {"Authorization", auth_header},
-                {"Idempotency-Token", idempotency_token}
+                {"Authorization", auth_header}
             })
             .data(userver::formats::json::ToString(order_request.ExtractValue()))
             .timeout(std::chrono::seconds(5))
@@ -103,7 +132,7 @@ std::string CreateOrder::
             return order_response->body();
         }
 
-        // Если заказ успешно создан, очищаем корзину (только переданные товары)
+        // Чистим корзину
         for (const auto& [article, quantity] : articles_to_remove) {
             auto result = pg_cluster_->Execute(
                 userver::storages::postgres::ClusterHostType::kMaster,
@@ -113,7 +142,6 @@ std::string CreateOrder::
 
             if (result.Size() > 0) {
                 const auto current_quantity = result[0]["quantity"].As<int>();
-                // Уменьшаем количество или удаляем строку
                 if (current_quantity - quantity <= 0) {
                     pg_cluster_->Execute(
                         userver::storages::postgres::ClusterHostType::kMaster,
@@ -136,7 +164,7 @@ std::string CreateOrder::
     } catch (const std::exception& ex) {
         LOG_ERROR() << "Error while creating order: " << ex.what();
         request.SetResponseStatus(userver::server::http::HttpStatus::kInternalServerError);
-        return "{\"error\": \"Internal server error\"}";
+        return R"({"error": "Internal server error"})";
     }
 }
 

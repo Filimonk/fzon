@@ -1,5 +1,7 @@
 #include <FetchPricesBulk.hpp>
 
+#include <utility>
+
 #include <userver/storages/postgres/component.hpp>
 #include <userver/formats/json.hpp>
 #include <userver/server/http/http_status.hpp>
@@ -33,11 +35,9 @@ std::string FetchPricesBulk::
         }
 
         // Запрашиваем цены товаров
-        std::string query = "SELECT article, price::float8 FROM products WHERE article = ANY($1)";
-        
         auto result = pg_cluster_->Execute(
             userver::storages::postgres::ClusterHostType::kMaster,
-            query,
+            "SELECT article, price::float8 FROM products WHERE article = ANY($1)",
             articles
         );
 
@@ -47,7 +47,12 @@ std::string FetchPricesBulk::
         for (const auto& row : result) {
             const auto article = row["article"].As<std::string>();
             const auto price = row["price"].As<double>();
-            prices_builder[article] = price;
+            
+            userver::formats::json::ValueBuilder item;
+            item["article"] = article;
+            item["price"] = price;
+            
+            prices_builder.PushBack(std::move(item));
         }
 
         userver::formats::json::ValueBuilder response_builder;

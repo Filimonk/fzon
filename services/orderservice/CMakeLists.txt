@@ -23,6 +23,8 @@ include_directories(src)
 add_library(
     ${PROJECT_NAME}_objs OBJECT
     src/CreateOrder.cpp
+    src/PaymentResult.cpp
+    src/OutboxWorker.cpp
 )
 target_link_libraries(
     ${PROJECT_NAME}_objs
