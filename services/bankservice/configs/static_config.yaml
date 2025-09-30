@@ -60,6 +60,16 @@ components_manager:
             method: POST
             task_processor: main-task-processor
 
+        handler-get-balance:
+            path: /get-balance
+            method: GET
+            task_processor: main-task-processor
+
+        handler-top-up-balance:
+            path: /top-up-balance
+            method: POST
+            task_processor: main-task-processor
+
         postgres-db-1:
             # dbconnection: $pg-connection
             dbconnection#env: DB_CONNECTION

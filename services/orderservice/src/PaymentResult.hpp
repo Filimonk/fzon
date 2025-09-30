@@ -3,6 +3,7 @@
 #include <userver/components/component.hpp>
 #include <userver/server/handlers/http_handler_base.hpp>
 #include <userver/storages/postgres/cluster.hpp>
+#include <userver/clients/http/client.hpp>
 
 namespace orderservice {
 
@@ -19,6 +20,7 @@ public:
 
 private:
     userver::storages::postgres::ClusterPtr pg_cluster_;
+    userver::clients::http::Client& http_client_;
 };
 
 }  // namespace orderservice

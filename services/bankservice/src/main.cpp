@@ -12,6 +12,8 @@
 
 #include <Payment.hpp>
 #include <OutboxWorker.hpp>
+#include <GetBalance.hpp>
+#include <TopUpBalance.hpp>
 
 int main(int argc, char* argv[]) {
     auto component_list = userver::components::MinimalServerComponentList()
@@ -21,6 +23,8 @@ int main(int argc, char* argv[]) {
                               .Append<userver::clients::dns::Component>()
                               .Append<bankservice::Payment>()
                               .Append<bankservice::OutboxWorker>()
+                              .Append<bankservice::GetBalance>()
+                              .Append<bankservice::TopUpBalance>()
                               .Append<userver::components::Postgres>("postgres-db-1")
         ;
 

@@ -26,7 +26,7 @@ std::string Payment::HandleRequestThrow(
         // сохраняем в outbox
         pg_cluster_->Execute(
             userver::storages::postgres::ClusterHostType::kMaster,
-            "INSERT INTO bankserviceschema.outbox (user_id, payload) VALUES ($1, $2::jsonb)",
+            "INSERT INTO outbox (user_id, payload) VALUES ($1, $2::jsonb)",
             user_id,
             body_json
         );

@@ -20,6 +20,7 @@ OutboxWorker::OutboxWorker(
       pg_cluster_(component_context.FindComponent<userver::components::Postgres>("postgres-db-1").GetCluster()),
       http_client_(component_context.FindComponent<userver::components::HttpClient>().GetHttpClient())
 {
+    std::srand(std::time(nullptr));
     utils::PeriodicTask::Settings settings{std::chrono::seconds{1}};
     periodic_task_.Start("bank-outbox-task", settings, [this] { DoWork(); });
 }
@@ -63,7 +64,7 @@ void OutboxWorker::DoWork() {
                     user_id
                 );
 
-                std::string status = "FAILED";
+                std::string status = "INSUFFICIENT_FUNDS";
 
                 if (user_res.Size() > 0) {
                     double balance = user_res[0]["balance"].As<double>();
@@ -75,6 +76,9 @@ void OutboxWorker::DoWork() {
                             );
 
                             status = "PAID";
+                        }
+                        else {
+                            status = "FAILED";
                         }
                     }
                 }

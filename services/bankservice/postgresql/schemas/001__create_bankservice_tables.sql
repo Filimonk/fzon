@@ -3,7 +3,6 @@
 -- Пользователи банка
 CREATE TABLE IF NOT EXISTS bankserviceschema.users (
     user_id SERIAL PRIMARY KEY, -- FORIEGIN KEY на таблицу юзеров из auth
-    username VARCHAR(50) NOT NULL UNIQUE,
     balance NUMERIC(12,2) NOT NULL DEFAULT 0.0
 );
 

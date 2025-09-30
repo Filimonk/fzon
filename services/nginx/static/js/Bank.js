@@ -2,33 +2,50 @@ class Bank {
     constructor() {
         this.container = document.getElementById('bank-container');
         this.currentBalance = 0;
+        this.token = localStorage.getItem("jwt_token");
         this.init();
     }
 
     async init() {
-        const token = localStorage.getItem("jwt_token");
-
-        if (!token) {
-            this.renderAuthMessage();
-            return;
-        }
-
-        await this.loadBalance();
-        this.renderBankPage();
-        this.bindEvents();
-    }
-
-    async loadBalance() {
-        const token = localStorage.getItem("jwt_token");
-        
         try {
-            const response = await fetch('/api/banckservice/balance', {
+            const response = await fetch('/api/authservice/verify', {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${this.token}`
                 }
             });
 
-            if (response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                this.renderAuthMessage();
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+        
+            await this.loadBalance();
+            this.renderBankPage();
+            this.bindEvents();
+
+        } catch (error) {
+            if (error.name === 'TypeError') {
+                alert('Произошла ошибка при соединении с сервером.\n\nСоздать заказ временно не получится. Попробуйте позже');
+            } else {
+                alert('Произошла ошибка на сервере.\n\nСоздать заказ временно не получится. Попробуйте позже');
+            }
+            console.error('Ошибка при загрузке корзины:', error);
+        }
+    }
+
+    async loadBalance() {
+        try {
+            const response = await fetch('/api/bankservice/get-balance', {
+                headers: {
+                    'Authorization': `Bearer ${this.token}`
+                }
+            });
+
+            if (response.status === 200) {
                 const data = await response.json();
                 this.currentBalance = data.balance || 0;
             } else {
@@ -100,12 +117,12 @@ class Bank {
         this.clearMessages();
         
         const amountInput = document.getElementById('amount');
-        const submitButton = document.getElementById('submit-button');
+        // const submitButton = document.getElementById('submit-button');
         const amount = parseFloat(amountInput.value);
 
         // Валидация
         if (!amount || amount <= 0) {
-            this.showError('amount', 'Введите корректную сумму');
+            this.showError('amount', 'Введите положительную сумму пополнения');
             return;
         }
 
@@ -114,26 +131,26 @@ class Bank {
             return;
         }
 
-        submitButton.disabled = true;
-        submitButton.textContent = 'Пополнение...';
+        // submitButton.disabled = true;
+        // submitButton.textContent = 'Пополнение...';
 
         try {
-            const token = localStorage.getItem("jwt_token");
-            const response = await fetch('/api/banckservice/top-up', {
+            const response = await fetch('/api/bankservice/top-up-balance', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${this.token}`
                 },
                 body: JSON.stringify({ amount: amount })
             });
 
             if (response.status === 204) {
                 // Успешное пополнение
-                this.showSuccess();
-                setTimeout(() => {
-                    location.reload(); // Перезагружаем страницу для обновления баланса
-                }, 1500);
+                // this.showSuccess();
+                // setTimeout(() => {
+                    // location.reload(); // Перезагружаем страницу для обновления баланса
+                // }, 1500);
+                location.reload();
             } else {
                 const errorData = await response.json().catch(() => null);
                 this.showError('amount', errorData?.message || `Ошибка: ${response.status}`);
@@ -142,8 +159,8 @@ class Bank {
             console.error('Ошибка при пополнении:', error);
             this.showError('amount', 'Ошибка соединения с сервером');
         } finally {
-            submitButton.disabled = false;
-            submitButton.textContent = 'Пополнить баланс';
+            // submitButton.disabled = false;
+            // submitButton.textContent = 'Пополнить баланс';
         }
     }
 

@@ -89,6 +89,11 @@ body {
     color: #b91c1c;
 }
 
+.order-status.INSUFFICIENT_FUNDS {
+    background: #fef3e2;
+    color: #b45309;
+}
+
 .order-amount {
     font-size: 18px;
     font-weight: bold;
