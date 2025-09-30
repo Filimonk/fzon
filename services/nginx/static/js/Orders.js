@@ -11,9 +11,10 @@ class Orders {
                     'Authorization': `Bearer ${this.token}`
                 }
             });
-            
+
             if (response.status === 401 || response.status === 403) {
-                return this.renderOrders();
+                this.renderAuthMessage();
+                return;
             }
 
             if (!response.ok) {
@@ -26,6 +27,15 @@ class Orders {
             console.error('Ошибка при загрузке заказов:', error);
             this.container.innerHTML = '<p class="error-message">Не удалось загрузить заказы. Попробуйте позже.</p>';
         }
+    }
+
+    renderAuthMessage() {
+        this.container.innerHTML = `
+            <div class="auth-message">
+                <h1>Войдите или зарегистрируйтесь</h1>
+                <p>Чтобы просматривать историю заказов и отслеживать их статус.</p>
+            </div>
+        `;
     }
 
     renderOrders(orders) {
