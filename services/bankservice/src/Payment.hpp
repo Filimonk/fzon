@@ -4,14 +4,14 @@
 #include <userver/server/handlers/http_handler_base.hpp>
 #include <userver/storages/postgres/cluster.hpp>
 
-namespace orderservice {
+namespace bankservice {
 
-class PaymentResult final : public userver::server::handlers::HttpHandlerBase {
+class Payment final : public userver::server::handlers::HttpHandlerBase {
 public:
-    static constexpr std::string_view kName = "handler-payment-result";
+    static constexpr std::string_view kName = "handler-payment";
 
-    PaymentResult(const userver::components::ComponentConfig&,
-                  const userver::components::ComponentContext&);
+    Payment(const userver::components::ComponentConfig&,
+            const userver::components::ComponentContext&);
 
     std::string HandleRequestThrow(
         const userver::server::http::HttpRequest&,
@@ -21,5 +21,5 @@ private:
     userver::storages::postgres::ClusterPtr pg_cluster_;
 };
 
-}  // namespace orderservice
+}  // namespace bankservice
 

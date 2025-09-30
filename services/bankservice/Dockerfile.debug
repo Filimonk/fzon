@@ -1,0 +1,10 @@
+FROM ghcr.io/userver-framework/ubuntu-24.04-userver:latest
+
+# Устанавливаем нужные инструменты
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/*
+
+# Рабочая директория (пока под рутом, user переключится в run_as_user.sh)
+WORKDIR /service
+

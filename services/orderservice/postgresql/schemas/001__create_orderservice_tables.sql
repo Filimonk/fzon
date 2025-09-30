@@ -1,12 +1,10 @@
 \connect fzon
 
-CREATE TYPE orderserviceschema.order_status AS ENUM ('PENDING', 'PAID', 'FAILED');
-
 CREATE TABLE IF NOT EXISTS orderserviceschema.orders (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     total_amount NUMERIC(10,2) NOT NULL,
-    status orderserviceschema.order_status NOT NULL DEFAULT 'PENDING',
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
     created_at TIMESTAMP DEFAULT now()
 );
 

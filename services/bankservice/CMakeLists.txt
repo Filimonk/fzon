@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12...3.31)
-project(orderservice CXX)
+project(bankservice CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(DownloadUserver)
@@ -22,10 +22,8 @@ include_directories(src)
 
 add_library(
     ${PROJECT_NAME}_objs OBJECT
-    src/CreateOrder.cpp
-    src/PaymentResult.cpp
+    src/Payment.cpp
     src/OutboxWorker.cpp
-    src/FetchOrdersBulk.cpp
 )
 target_link_libraries(
     ${PROJECT_NAME}_objs

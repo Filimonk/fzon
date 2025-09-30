@@ -170,7 +170,7 @@ class Header {
                         this.showAuthModal();
                         break;
                     case 1: // Авторизован
-                        window.location.href = '/user.html';
+                        window.location.href = '/profile.html';
                         break;
                     default: // null или другие значения
                         console.log('Статус авторизации не определён');

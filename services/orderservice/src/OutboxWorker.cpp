@@ -35,14 +35,19 @@ OutboxWorker::~OutboxWorker() {
 
 void OutboxWorker::DoWork() {
     try {
-        // Блокируем и выбираем непроцессированные записи с помощью FOR UPDATE SKIP LOCKED
-        auto result = pg_cluster_->Execute(
+        auto transaction = pg_cluster_->Begin(
             userver::storages::postgres::ClusterHostType::kMaster,
+            userver::storages::postgres::TransactionOptions{}
+        );
+        
+        // Блокируем и выбираем непроцессированные записи с помощью FOR UPDATE SKIP LOCKED
+        auto result = transaction.Execute(
             "SELECT id, user_id, payload FROM outbox WHERE processed = false "
             "ORDER BY id FOR UPDATE SKIP LOCKED LIMIT 10"  // Ограничиваем batch размер
         );
 
         if (result.Size() == 0) {
+            transaction.Rollback();
             return; // Нет записей для обработки
         }
 
@@ -53,6 +58,9 @@ void OutboxWorker::DoWork() {
             const auto payload_json = row["payload"].As<userver::formats::json::Value>();
 
             try {
+                // Создаем точку сохранения для этой записи
+                transaction.Execute("SAVEPOINT outbox_record_" + std::to_string(outbox_id));
+                
                 // Парсим payload
                 const auto items = payload_json["cart_items"];
 
@@ -68,13 +76,7 @@ void OutboxWorker::DoWork() {
                     total_amount += quantity * price;
                     order_items_data.emplace_back(article, quantity, price);
                 }
-
-                // Начинаем транзакцию для создания заказа и пометки outbox как обработанного
-                auto transaction = pg_cluster_->Begin(
-                    userver::storages::postgres::ClusterHostType::kMaster,
-                    userver::storages::postgres::TransactionOptions{}
-                );
-
+    
                 // Создаем заказ
                 auto order_result = transaction.Execute(
                     "INSERT INTO orders (user_id, total_amount, status) "
@@ -102,38 +104,40 @@ void OutboxWorker::DoWork() {
                     "UPDATE outbox SET processed = true WHERE id = $1",
                     outbox_id
                 );
-
-                // Коммитим транзакцию
-                transaction.Commit();
-
+    
                 // Отправляем запрос в банковский сервис (асинхронно, не ждем ответ)
+                // TODO: надо научиться слать его в новой корутине на отдельном таск процессоре
                 userver::formats::json::ValueBuilder payment_request;
                 payment_request["order_id"] = order_id;
                 payment_request["user_id"] = user_id;
                 payment_request["amount"] = total_amount;
+                
+                try {
+                    auto response = http_client_.CreateRequest()
+                        .post()
+                        .url("http://bankservice:8080/payment")
+                        .data(userver::formats::json::ToString(payment_request.ExtractValue()))
+                        .timeout(std::chrono::seconds(30)) // Долгий таймаут для банковского сервиса
+                        .perform();
 
-                // Используем Async для асинхронной отправки
-                userver::engine::AsyncNoSpan([this, payment_request]() mutable {
-                    try {
-                        auto request = http_client_.CreateRequest()
-                            .post()
-                            .url("http://bankservice:8080/payment")
-                            .data(userver::formats::json::ToString(payment_request.ExtractValue()))
-                            .timeout(std::chrono::seconds(30)); // Долгий таймаут для банковского сервиса
-
-                        // Не ждем ответ - просто отправляем и забываем
-                        auto response = request.perform();
-                    } catch (const std::exception& ex) {
-                        LOG_ERROR() << "Failed to send payment request: " << ex.what();
-                        // Не перебрасываем исключение - просто логируем ошибку
+                    if (response->status_code() != 204) {
+                        LOG_INFO() << "Sent payment request to bankservice successfuly";
                     }
-                });
+                    else {
+                        LOG_WARNING() << "Payment service returned status: " << response->status_code();
+                    }
+                } catch (const std::exception& ex) {
+                    LOG_ERROR() << "Failed to send payment request: " << ex.what();
+                }
 
             } catch (const std::exception& ex) {
+                // Откатываем только ЭТУ запись outbox, продолжаем остальные
                 LOG_ERROR() << "Failed to process outbox record " << outbox_id << ": " << ex.what();
-                // Не помечаем как processed при ошибке - будет повторная попытка
+                transaction.Execute("ROLLBACK TO SAVEPOINT outbox_record_" + std::to_string(outbox_id));
             }
         }
+        
+        transaction.Commit();
 
     } catch (const std::exception& ex) {
         LOG_ERROR() << "Error in OutboxWorker DoWork: " << ex.what();

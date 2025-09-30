@@ -55,19 +55,9 @@ components_manager:
             throttling_enabled: false
             url_trailing_slash: strict-match
 
-        handler-create-order:
-            path: /create-order
+        handler-payment:
+            path: /payment
             method: POST
-            task_processor: main-task-processor
-
-        handler-payment-result:
-            path: /payment-result
-            method: POST
-            task_processor: main-task-processor
-
-        handler-fetch-orders-bulk:
-            path: /fetch-orders-bulk
-            method: GET
             task_processor: main-task-processor
 
         postgres-db-1:
@@ -77,6 +67,6 @@ components_manager:
             dns_resolver: async
             sync-start: true
             connlimit_mode: manual
-        
+
         outbox-worker:
 

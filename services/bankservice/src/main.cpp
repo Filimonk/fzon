@@ -10,10 +10,8 @@
 
 #include <userver/utils/daemon_run.hpp>
 
-#include <CreateOrder.hpp>
-#include <PaymentResult.hpp>
+#include <Payment.hpp>
 #include <OutboxWorker.hpp>
-#include <FetchOrdersBulk.hpp>
 
 int main(int argc, char* argv[]) {
     auto component_list = userver::components::MinimalServerComponentList()
@@ -21,10 +19,8 @@ int main(int argc, char* argv[]) {
                               .Append<userver::components::TestsuiteSupport>()
                               .Append<userver::components::HttpClient>()
                               .Append<userver::clients::dns::Component>()
-                              .Append<orderservice::CreateOrder>()
-                              .Append<orderservice::PaymentResult>()
-                              .Append<orderservice::OutboxWorker>()
-                              .Append<orderservice::FetchOrdersBulk>()
+                              .Append<bankservice::Payment>()
+                              .Append<bankservice::OutboxWorker>()
                               .Append<userver::components::Postgres>("postgres-db-1")
         ;
 

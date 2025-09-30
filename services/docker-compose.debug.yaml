@@ -161,6 +161,39 @@ services:
       - postgresql
       # - kafka
   
+  bankservice:
+    build:
+      context: ./bankservice
+      dockerfile: Dockerfile.debug
+    hostname: bankservice
+    environment:
+      ###### замена переменных
+      DB_CONNECTION: "postgresql://${BANK_DB_USER}:${BANK_DB_PASSWORD}@postgresql:5432/${BANK_DB_NAME}?\
+                      options=-c%20search_path%3D${BANK_DB_SCHEMA}"
+      
+      # KAFKA_BROKERS: "${KAFKA_BROKERS}"
+      # KAFKA_GROUP_ID: "${BANKSERVICE_KAFKA_GROUP_NAME}"
+
+      HOME: /service
+      CCACHE_DIR: /service/.ccache
+    security_opt:
+      - seccomp=./bankservice/seccomp_config.json
+    command:
+      - ./run_as_user.sh
+      - "${UID}"
+      - "${GID}"
+      - sh
+      - -lc
+      - "make build-debug && ./build-debug/bankservice --config configs/static_config.yaml \
+                                                          --config_vars configs/config_vars.yaml"
+    volumes:
+      - ./bankservice:/service
+    networks:
+      - debug-net
+    depends_on:
+      - postgresql
+      # - kafka
+  
   postgresql:
     container_name: postgresql
     image: postgres:17
